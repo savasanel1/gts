@@ -149,37 +149,174 @@
 const pageContents = {
     home: `
         <div class="dashboard-content">
-            <!-- Dashboard içeriği ana sayfada görünecek -->
             <div class="dashboard-cards">
-                <!-- Mevcut kartlar -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Aktif Görevler</h3>
+                        <p class="number">12</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Tamamlanan Görevler</h3>
+                        <p class="number">85</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="number">7</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Performans Puanı</h3>
+                        <p class="number">92</p>
+                    </div>
+                </div>
             </div>
             <div class="recent-tasks">
-                <!-- Mevcut görevler -->
+                <div class="section-header">
+                    <h2>Son Görevler</h2>
+                    <button class="new-task-btn">Yeni Görev</button>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     `,
     users: `
         <div class="user-management-container">
-            <!-- Sadece kullanıcı yönetimi içeriği -->
             <div class="user-actions">
                 <button class="add-user-btn" onclick="openUserModal()">
                     <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
                 </button>
             </div>
             <table class="users-table">
-                <!-- Kullanıcı tablosu -->
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>E-posta</th>
+                        <th>Rol</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr>
+                        <td>Ahmet Yılmaz</td>
+                        <td>ahmet.yilmaz</td>
+                        <td>ahmet@aybu.edu.tr</td>
+                        <td><span class="role-badge role-super-admin">Süper Admin</span></td>
+                        <td><span class="status-active">Aktif</span></td>
+                        <td>
+                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
     `,
     tasks: `
-        <div class="tasks-container">
-            <!-- Görevlerim sayfasında dashboard da görünecek -->
-            <div class="dashboard-content">
-                <div class="dashboard-cards">
-                    <!-- Kartlar tekrar -->
+        <div class="dashboard-content">
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Aktif Görevler</h3>
+                        <p class="number">12</p>
+                    </div>
                 </div>
-                <div class="recent-tasks">
-                    <!-- Görevler tekrar -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Tamamlanan Görevler</h3>
+                        <p class="number">85</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="number">7</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Performans Puanı</h3>
+                        <p class="number">92</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-tasks">
+                <div class="section-header">
+                    <h2>Son Görevler</h2>
+                    <button class="new-task-btn">Yeni Görev</button>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -188,7 +325,7 @@ const pageContents = {
         <div class="team-container">
             <h2>Ekip Üyeleri</h2>
             <div class="team-list">
-                <!-- Sadece ekip listesi -->
+                <!-- Ekip listesi içeriği -->
             </div>
         </div>
     `,
@@ -196,7 +333,7 @@ const pageContents = {
         <div class="reports-container">
             <h2>Raporlar</h2>
             <div class="reports-content">
-                <!-- Sadece raporlar içeriği -->
+                <!-- Raporlar içeriği -->
             </div>
         </div>
     `,
@@ -204,7 +341,7 @@ const pageContents = {
         <div class="settings-container">
             <h2>Ayarlar</h2>
             <div class="settings-content">
-                <!-- Sadece ayarlar içeriği -->
+                <!-- Ayarlar içeriği -->
             </div>
         </div>
     `
