@@ -4,7 +4,21 @@ kullaniciadi.github.io/
 └── assets/
     ├── images/
     └── js/
-/* Modal Styles */
+/* Mevcut CSS kodları */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #f8f9fa;
+}
+
+/* ... diğer mevcut CSS kodları ... */
+
+/* Yeni eklenen Modal ve Form stilleri */
 .modal {
     display: none;
     position: fixed;
@@ -33,7 +47,6 @@ kullaniciadi.github.io/
     cursor: pointer;
 }
 
-/* Form Styles */
 .form-group {
     margin-bottom: 15px;
 }
