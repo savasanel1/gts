@@ -393,5 +393,19 @@
             </div>
         </div>
     </div>
+    <script>
+    // Aktif menüyü işaretle
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        menuItems.forEach(item => {
+            item.classList.remove('active');
+            if(item.getAttribute('href') === currentPage) {
+                item.classList.add('active');
+            }
+        });
+    });
+</script>
 </body>
 </html>
