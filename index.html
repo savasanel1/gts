@@ -137,10 +137,135 @@
             font-size: 14px;
             opacity: 0.7;
         }
+
+        /* Dashboard Styles */
+        .dashboard-content {
+            margin-top: 20px;
+        }
+
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            background: #f0f7ff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+        }
+
+        .card-icon i {
+            font-size: 24px;
+            color: #003366;
+        }
+
+        .card-info h3 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .card-info .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .recent-tasks {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .new-task-btn {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .task-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-info h4 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .task-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .task-meta {
+            text-align: right;
+        }
+
+        .deadline {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.in-progress {
+            background: #cce5ff;
+            color: #004085;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
             <i class="fas fa-university" style="font-size: 30px;"></i>
@@ -174,6 +299,7 @@
         </div>
     </div>
 
+    <!-- Main Content -->
     <div class="main-content">
         <div class="top-bar">
             <h2>Ana Sayfa</h2>
@@ -188,6 +314,77 @@
                 <div class="user-profile">
                     <span>Ahmet Yılmaz</span>
                     <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Aktif Görevler</h3>
+                        <p class="number">12</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Tamamlanan Görevler</h3>
+                        <p class="number">85</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="number">7</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Performans Puanı</h3>
+                        <p class="number">92</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-tasks">
+                <div class="section-header">
+                    <h2>Son Görevler</h2>
+                    <button class="new-task-btn">Yeni Görev</button>
+                </div>
+                <div class="task-list">
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
