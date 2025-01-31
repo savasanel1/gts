@@ -5,27 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AYBÜ Görev Takip</title>
     <style>
-        :root {
-            --primary-color: #003366;
-            --secondary-color: #0099cc;
-            --background-color: #f5f6fa;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--background-color);
+            background-color: #f8f9fa;
         }
 
         .sidebar {
             width: 250px;
             height: 100vh;
-            background-color: var(--primary-color);
+            background-color: #003366;
             position: fixed;
             left: 0;
             top: 0;
@@ -35,26 +29,38 @@
         .logo {
             padding: 20px;
             text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo img {
+            width: 40px;
+            filter: brightness(0) invert(1);
+            margin-bottom: 10px;
+        }
+
+        .logo h2 {
+            font-size: 18px;
+            margin-top: 10px;
         }
 
         .menu-items {
-            padding: 20px 0;
+            margin-top: 20px;
         }
 
         .menu-item {
-            padding: 15px 25px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
-            cursor: pointer;
-        }
-
-        .menu-item:hover {
-            background-color: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
         }
 
         .menu-item.active {
-            background-color: var(--secondary-color);
+            background-color: #00a8ff;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            font-size: 18px;
         }
 
         .main-content {
@@ -66,73 +72,125 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
             background-color: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .search-bar {
+        .search-box {
             flex: 1;
             margin: 0 20px;
+            position: relative;
         }
 
-        .search-bar input {
+        .search-box input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .notification {
+            position: relative;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ff3b30;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
         }
 
         .user-profile {
             display: flex;
             align-items: center;
             gap: 10px;
+            color: #333;
+        }
+
+        .bottom-user {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .bottom-user .name {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .bottom-user .role {
+            font-size: 14px;
+            opacity: 0.7;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div class="sidebar">
         <div class="logo">
+            <i class="fas fa-university" style="font-size: 30px;"></i>
             <h2>AYBÜ Görev Takip</h2>
         </div>
         <div class="menu-items">
-            <div class="menu-item active">
-                <span>Ana Sayfa</span>
-            </div>
-            <div class="menu-item">
-                <span>Görevlerim</span>
-            </div>
-            <div class="menu-item">
-                <span>Ekibim</span>
-            </div>
-            <div class="menu-item">
-                <span>Raporlar</span>
-            </div>
-            <div class="menu-item">
-                <span>Ayarlar</span>
-            </div>
+            <a href="#" class="menu-item active">
+                <i class="fas fa-home"></i>
+                Ana Sayfa
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-tasks"></i>
+                Görevlerim
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-users"></i>
+                Ekibim
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-chart-bar"></i>
+                Raporlar
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
         </div>
-        <div class="user-info" style="position: absolute; bottom: 20px; padding: 20px;">
-            <div>Ahmet Yılmaz</div>
-            <div style="font-size: 0.8em; opacity: 0.8;">Yönetici</div>
+        <div class="bottom-user">
+            <div class="name">Ahmet Yılmaz</div>
+            <div class="role">Yönetici</div>
         </div>
     </div>
 
     <div class="main-content">
         <div class="top-bar">
             <h2>Ana Sayfa</h2>
-            <div class="search-bar">
+            <div class="search-box">
                 <input type="text" placeholder="Ara...">
             </div>
-            <div class="user-profile">
-                <div class="notifications">
-                    <span>🔔</span>
+            <div class="user-section">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
                 </div>
-                <div>Ahmet Yılmaz ▼</div>
+                <div class="user-profile">
+                    <span>Ahmet Yılmaz</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
             </div>
         </div>
-        <!-- Ana içerik buraya gelecek -->
     </div>
 </body>
 </html>
