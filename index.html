@@ -4,13 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AYBÜ Görev Takip</title>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYBÜ Görev Takip</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -20,132 +14,105 @@
             <i class="fas fa-university" style="font-size: 30px;"></i>
             <h2>AYBÜ Görev Takip</h2>
         </div>
-    <div class="menu-items">
-    <a href="#" class="menu-item active" data-page="home">
-        <i class="fas fa-home"></i>
-        Ana Sayfa
-    </a>
-    <a href="#" class="menu-item" data-page="users">
-        <i class="fas fa-users-cog"></i>
-        Kullanıcı Yönetimi
-    </a>
-    <a href="#" class="menu-item" data-page="tasks">
-        <i class="fas fa-tasks"></i>
-        Görevlerim
-    </a>
-    <a href="#" class="menu-item" data-page="team">
-        <i class="fas fa-users"></i>
-        Ekibim
-    </a>
-    <a href="#" class="menu-item" data-page="reports">
-        <i class="fas fa-chart-bar"></i>
-        Raporlar
-    </a>
-    <a href="#" class="menu-item" data-page="settings">
-        <i class="fas fa-cog"></i>
-        Ayarlar
-    </a>
-</div>
+        <div class="menu-items">
+            <a href="#" class="menu-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                Ana Sayfa
+            </a>
+            <a href="#" class="menu-item" data-page="users">
+                <i class="fas fa-users-cog"></i>
+                Kullanıcı Yönetimi
+            </a>
+            <a href="#" class="menu-item" data-page="tasks">
+                <i class="fas fa-tasks"></i>
+                Görevlerim
+            </a>
+            <a href="#" class="menu-item" data-page="team">
+                <i class="fas fa-users"></i>
+                Ekibim
+            </a>
+            <a href="#" class="menu-item" data-page="reports">
+                <i class="fas fa-chart-bar"></i>
+                Raporlar
+            </a>
+            <a href="#" class="menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+        </div>
         <div class="bottom-user">
             <div class="name">Ahmet Yılmaz</div>
             <div class="role">Yönetici</div>
         </div>
     </div>
-
     <!-- Main Content -->
-   <div class="main-content">
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <h2 id="pageTitle">Ana Sayfa</h2>
-        <div class="search-box">
-            <input type="text" placeholder="Ara...">
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h2 id="pageTitle">Ana Sayfa</h2>
+            <div class="search-box">
+                <input type="text" placeholder="Ara...">
+            </div>
+            <div class="user-section">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <span>Ahmet Yılmaz</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
         </div>
-        <div class="user-section">
-            <div class="notification">
-                <i class="fas fa-bell"></i>
-                <span class="notification-badge">3</span>
-            </div>
-            <div class="user-profile">
-                <span>Ahmet Yılmaz</span>
-                <i class="fas fa-chevron-down"></i>
-            </div>
+        <!-- Dynamic Content Area -->
+        <div id="contentArea">
+            <!-- Burası dinamik olarak değişecek -->
+        </div>
+    </div>
+        <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h2>Yeni Kullanıcı Ekle</h2>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label>Ad Soyad</label>
+                    <input type="text" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select name="role" required>
+                        <option value="super_admin">Süper Admin</option>
+                        <option value="admin">Yönetici</option>
+                        <option value="manager">Amir</option>
+                        <option value="user">Personel</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Durum</label>
+                    <select name="status" required>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Pasif</option>
+                    </select>
+                </div>
+                <button type="submit" class="add-user-btn">Kaydet</button>
+            </form>
         </div>
     </div>
 
-    <!-- Dynamic Content Area -->
-    <div id="contentArea">
-        <!-- Burası dinamik olarak değişecek -->
-    </div>
-</div>
-
-        <!-- Dashboard Content -->
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-tasks"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>Aktif Görevler</h3>
-                        <p class="number">12</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>Tamamlanan Görevler</h3>
-                        <p class="number">85</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>Bekleyen Görevler</h3>
-                        <p class="number">7</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-icon">
-                        <i class="fas fa-star"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>Performans Puanı</h3>
-                        <p class="number">92</p>
-                    </div>
-                </div>
-                <div class="section-header">
-                    <h2>Son Görevler</h2>
-                    <button class="new-task-btn">Yeni Görev</button>
-                </div>
-                <div class="task-list">
-                    <div class="task-item">
-                        <div class="task-info">
-                            <h4>Rapor Hazırlama</h4>
-                            <p>Aylık faaliyet raporunun hazırlanması</p>
-                        </div>
-                        <div class="task-meta">
-                            <span class="deadline">Son Tarih: 25.12.2023</span>
-                            <span class="status pending">Beklemede</span>
-                        </div>
-                    </div>
-                    <div class="task-item">
-                        <div class="task-info">
-                            <h4>Toplantı Organizasyonu</h4>
-                            <p>Departman toplantısının organize edilmesi</p>
-                        </div>
-                        <div class="task-meta">
-                            <span class="deadline">Son Tarih: 20.12.2023</span>
-                            <span class="status in-progress">Devam Ediyor</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 <script>
-// Sayfa içeriklerini tanımlayalım
 const pageContents = {
     home: `
         <div class="dashboard-content">
@@ -347,7 +314,6 @@ const pageContents = {
     `
 };
 
-// Kullanıcı işlemleri için fonksiyonlar
 function openUserModal() {
     document.getElementById('userModal').style.display = 'block';
 }
@@ -360,8 +326,6 @@ function saveUser(event) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    
-    // Yeni kullanıcı satırı oluştur
     const tr = document.createElement('tr');
     tr.innerHTML = `
         <td>${formData.get('fullName')}</td>
@@ -374,7 +338,6 @@ function saveUser(event) {
             <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fas fa-trash"></i></button>
         </td>
     `;
-    
     document.getElementById('userTableBody').appendChild(tr);
     closeUserModal();
     form.reset();
@@ -401,31 +364,24 @@ function deleteUser(btn) {
     }
 }
 
-// Sayfa yüklendiğinde
 document.addEventListener('DOMContentLoaded', function() {
     const menuItems = document.querySelectorAll('.menu-item');
-    
     menuItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
-            
             menuItems.forEach(i => i.classList.remove('active'));
             this.classList.add('active');
-            
             const pageTitle = this.textContent.trim();
             document.getElementById('pageTitle').textContent = pageTitle;
-            
             const page = this.getAttribute('data-page');
             const content = pageContents[page] || '<div>Sayfa bulunamadı</div>';
             document.getElementById('contentArea').innerHTML = content;
         });
     });
     
-    // Varsayılan olarak ana sayfayı göster
     document.querySelector('.menu-item[data-page="home"]').click();
 });
 
-// Modal dışına tıklandığında kapatma
 window.onclick = function(event) {
     const modal = document.getElementById('userModal');
     if (event.target == modal) {
