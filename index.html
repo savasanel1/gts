@@ -45,7 +45,8 @@
             <div class="role">Yönetici</div>
         </div>
     </div>
-        <!-- Main Content -->
+
+    <!-- Main Content -->
     <div class="main-content">
         <!-- Top Bar -->
         <div class="top-bar">
@@ -69,8 +70,7 @@
             <!-- Burası dinamik olarak değişecek -->
         </div>
     </div>
-
-    <!-- User Modal -->
+        <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">&times;</span>
@@ -156,7 +156,25 @@
             </form>
         </div>
     </div>
-    <script>
+
+<script>
+    // Kullanıcının süper admin olup olmadığını kontrol et
+function isSuperAdmin() {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    return profileData && profileData.role === 'super_admin';
+}
+
+// Rol adını formatla
+function formatRoleName(role) {
+    const roles = {
+        super_admin: 'Süper Admin',
+        admin: 'Yönetici',
+        manager: 'Amir',
+        user: 'Personel'
+    };
+    return roles[role] || role;
+}
+
 const pageContents = {
     home: `
         <div class="dashboard-content">
@@ -228,7 +246,7 @@ const pageContents = {
             </div>
         </div>
     `,
-    users: `
+        users: `
         <div class="user-management-container">
             <div class="user-actions">
                 <button class="add-user-btn" onclick="openUserModal()">
@@ -262,7 +280,7 @@ const pageContents = {
             </table>
         </div>
     `,
-        tasks: `
+    tasks: `
         <div class="dashboard-content">
             <div class="dashboard-cards">
                 <div class="card">
@@ -348,110 +366,107 @@ const pageContents = {
             </div>
         </div>
     `,
-    settings: `
-    <div class="settings-container">
-        <div class="settings-grid">
-            <!-- Profil Bilgileri Bölümü -->
-            <div class="settings-card">
-                <div class="settings-header">
-                    <h3><i class="fas fa-user"></i> Profil Bilgileri</h3>
-                </div>
-                <div class="settings-content">
-                    <form id="profileForm" onsubmit="updateProfile(event)">
-                        <div class="profile-image-section">
-                            <div class="profile-image">
-                                <img src="default-avatar.png" id="profileImage" alt="Profil Fotoğrafı">
-                                <div class="image-upload">
-                                    <label for="imageInput">
-                                        <i class="fas fa-camera"></i>
-                                    </label>
-                                    <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+        settings: `
+        <div class="settings-container">
+            <div class="settings-grid">
+                <!-- Profil Bilgileri Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-user"></i> Profil Bilgileri</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="profileForm" onsubmit="updateProfile(event)">
+                            <div class="profile-image-section">
+                                <div class="profile-image">
+                                    <img src="default-avatar.png" id="profileImage" alt="Profil Fotoğrafı">
+                                    <div class="image-upload">
+                                        <label for="imageInput">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                        <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Ad Soyad</label>
-                            <input type="text" name="fullName" value="Ahmet Yılmaz" required>
-                        </div>
-                        <div class="form-group">
-                            <label>E-posta</label>
-                            <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
-                        </div>
-                        <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
-                     <div class="form-group">
-                            <label>Rol</label>
-                            <select name="userRole" required>
-                                ${isSuperAdmin() ? `
-                                    <option value="super_admin">Süper Admin</option>
-                                    <option value="admin">Yönetici</option>
-                                    <option value="manager">Amir</option>
-                                    <option value="user">Personel</option>
-                                ` : `
-                                    <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
-                                `}
-                            </select>
-                        </div>
-                        <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
-                    </form>
+                            <div class="form-group">
+                                <label>Ad Soyad</label>
+                                <input type="text" name="fullName" value="Ahmet Yılmaz" required>
+                            </div>
+                            <div class="form-group">
+                                <label>E-posta</label>
+                                <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rol</label>
+                                <select name="userRole" required ${!isSuperAdmin() ? 'disabled' : ''}>
+                                    ${isSuperAdmin() ? `
+                                        <option value="super_admin">Süper Admin</option>
+                                        <option value="admin">Yönetici</option>
+                                        <option value="manager">Amir</option>
+                                        <option value="user">Personel</option>
+                                    ` : `
+                                        <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
+                                    `}
+                                </select>
+                            </div>
+                            <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Sicil Bilgileri Bölümü -->
-            <div class="settings-card">
-                <div class="settings-header">
-                    <h3><i class="fas fa-id-card"></i> Sicil Bilgileri</h3>
+                <!-- Sicil Bilgileri Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-id-card"></i> Sicil Bilgileri</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="registryForm" onsubmit="updateRegistry(event)">
+                            <div class="form-group">
+                                <label>Sicil Numarası</label>
+                                <input type="text" name="registryNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Birim</label>
+                                <input type="text" name="department" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ünvan</label>
+                                <input type="text" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label>İşe Başlama Tarihi</label>
+                                <input type="date" name="startDate" required>
+                            </div>
+                            <button type="submit" class="save-btn">Bilgileri Güncelle</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="settings-content">
-                    <form id="registryForm" onsubmit="updateRegistry(event)">
-                        <div class="form-group">
-                            <label>Sicil Numarası</label>
-                            <input type="text" name="registryNumber" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Birim</label>
-                            <input type="text" name="department" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Ünvan</label>
-                            <input type="text" name="title" required>
-                        </div>
-                        <div class="form-group">
-                            <label>İşe Başlama Tarihi</label>
-                            <input type="date" name="startDate" required>
-                        </div>
-                        <button type="submit" class="save-btn">Bilgileri Güncelle</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Şifre Değiştirme Bölümü -->
-            <div class="settings-card">
-                <div class="settings-header">
-                    <h3><i class="fas fa-lock"></i> Şifre Değiştirme</h3>
-                </div>
-                <div class="settings-content">
-                    <form id="passwordForm" onsubmit="updatePassword(event)">
-                        <div class="form-group">
-                            <label>Mevcut Şifre</label>
-                            <input type="password" name="currentPassword" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Yeni Şifre</label>
-                            <input type="password" name="newPassword" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Yeni Şifre (Tekrar)</label>
-                            <input type="password" name="confirmPassword" required>
-                        </div>
-                        <button type="submit" class="save-btn">Şifreyi Değiştir</button>
-                    </form>
+                <!-- Şifre Değiştirme Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-lock"></i> Şifre Değiştirme</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="passwordForm" onsubmit="updatePassword(event)">
+                            <div class="form-group">
+                                <label>Mevcut Şifre</label>
+                                <input type="password" name="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Yeni Şifre</label>
+                                <input type="password" name="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Yeni Şifre (Tekrar)</label>
+                                <input type="password" name="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="save-btn">Şifreyi Değiştir</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-`
+    `
 };
-        // Görev işlemleri için fonksiyonlar
+    // Görev işlemleri için fonksiyonlar
 function openTaskModal() {
     document.getElementById('taskModal').style.display = 'block';
 }
@@ -486,7 +501,7 @@ function saveTask(event) {
     showNotification('Görev başarıyla eklendi', 'success');
 }
 
-// Profil fotoğrafı önizleme
+// Profil işlemleri için fonksiyonlar
 function previewImage(event) {
     const file = event.target.files[0];
     if (file) {
@@ -500,34 +515,21 @@ function previewImage(event) {
     }
 }
 
-// Profil bilgilerini güncelleme
 function updateProfile(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     
-    // Mevcut profil bilgilerini al
-    const currentProfile = JSON.parse(localStorage.getItem('profileData'));
-    
-   const profileData = {
+    const profileData = {
         fullName: formData.get('fullName'),
         email: formData.get('email'),
-        role: isSuperAdmin() ? formData.get('userRole') : (currentProfile?.role || 'user')
+        role: formData.get('userRole') || JSON.parse(localStorage.getItem('profileData'))?.role || 'user'
     };
     
     localStorage.setItem('profileData', JSON.stringify(profileData));
     
+    // Sol alttaki kullanıcı adını ve rolünü güncelle
     document.querySelector('.bottom-user .name').textContent = profileData.fullName;
     document.querySelector('.bottom-user .role').textContent = formatRoleName(profileData.role);
-    document.querySelector('.user-profile span').textContent = profileData.fullName;
-    
-    showNotification('Profil bilgileri başarıyla güncellendi', 'success');
-}
-    
-    // Profil bilgilerini localStorage'a kaydet
-    localStorage.setItem('profileData', JSON.stringify(profileData));
-    
-    // Sol alttaki kullanıcı adını güncelle
-    document.querySelector('.bottom-user .name').textContent = profileData.fullName;
     
     // Sağ üstteki kullanıcı adını güncelle
     document.querySelector('.user-profile span').textContent = profileData.fullName;
@@ -535,70 +537,6 @@ function updateProfile(event) {
     showNotification('Profil bilgileri başarıyla güncellendi', 'success');
 }
 
-// Sayfa yüklendiğinde profil bilgilerini yükle
-function loadSavedData() {
-    const profileData = JSON.parse(localStorage.getItem('profileData'));
-    if (profileData) {
-        // Form alanlarını doldur
-        document.querySelector('input[name="fullName"]').value = profileData.fullName;
-        document.querySelector('input[name="email"]').value = profileData.email;
-        
-        // Rol seçim alanını kontrol et
-        const roleSelect = document.querySelector('select[name="userRole"]');
-        if (roleSelect) {
-            if (isSuperAdmin()) {
-                // Süper admin için tüm rol seçeneklerini göster
-                roleSelect.disabled = false;
-                roleSelect.value = profileData.role;
-            } else {
-                // Diğer kullanıcılar için sadece kendi rollerini göster ve değiştirmeyi engelle
-                roleSelect.innerHTML = `<option value="${profileData.role}">${formatRoleName(profileData.role)}</option>`;
-                roleSelect.disabled = true;
-            }
-        }
-        
-        // Sol alttaki ve üstteki bilgileri güncelle
-        const bottomUserName = document.querySelector('.bottom-user .name');
-        const bottomUserRole = document.querySelector('.bottom-user .role');
-        const topUserName = document.querySelector('.user-profile span');
-        
-        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
-        if (bottomUserRole) bottomUserRole.textContent = formatRoleName(profileData.role);
-        if (topUserName) topUserName.textContent = profileData.fullName;
-    }
-
-    // Profil fotoğrafını yükle
-    const savedImage = localStorage.getItem('profileImage');
-    if (savedImage) {
-        document.getElementById('profileImage').src = savedImage;
-    }
-
-    // Sicil bilgilerini yükle
-    const registryData = JSON.parse(localStorage.getItem('registryData'));
-    if (registryData) {
-        document.querySelector('input[name="registryNumber"]').value = registryData.registryNumber;
-        document.querySelector('input[name="department"]').value = registryData.department;
-        document.querySelector('input[name="title"]').value = registryData.title;
-        document.querySelector('input[name="startDate"]').value = registryData.startDate;
-    }
-}
-
-// Sayfa yüklendiğinde
-document.addEventListener('DOMContentLoaded', function() {
-    // Mevcut event listener'lar...
-    
-    // Sayfa ilk yüklendiğinde kaydedilmiş profil bilgilerini yükle
-    const profileData = JSON.parse(localStorage.getItem('profileData'));
-    if (profileData) {
-        const bottomUserName = document.querySelector('.bottom-user .name');
-        const topUserName = document.querySelector('.user-profile span');
-        
-        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
-        if (topUserName) topUserName.textContent = profileData.fullName;
-    }
-});
-
-// Sicil bilgilerini güncelleme
 function updateRegistry(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -661,7 +599,7 @@ function saveUser(event) {
         <td>${formData.get('fullName')}</td>
         <td>${formData.get('username')}</td>
         <td>${formData.get('email')}</td>
-        <td><span class="role-badge role-${formData.get('role')}">${getRoleName(formData.get('role'))}</span></td>
+        <td><span class="role-badge role-${formData.get('role')}">${formatRoleName(formData.get('role'))}</span></td>
         <td><span class="status-${formData.get('status')}">${formData.get('status') === 'active' ? 'Aktif' : 'Pasif'}</span></td>
         <td>
             <button class="action-btn edit-btn" onclick="editUser(this)"><i class="fas fa-edit"></i></button>
@@ -671,21 +609,6 @@ function saveUser(event) {
     document.getElementById('userTableBody').appendChild(tr);
     closeUserModal();
     form.reset();
-}
-        // Kullanıcının süper admin olup olmadığını kontrol et
-function isSuperAdmin() {
-    const profileData = JSON.parse(localStorage.getItem('profileData'));
-    return profileData && profileData.role === 'super_admin';
-}
-
-function getRoleName(role) {
-    const roles = {
-        super_admin: 'Süper Admin',
-        admin: 'Yönetici',
-        manager: 'Amir',
-        user: 'Personel'
-    };
-    return roles[role] || role;
 }
 
 function editUser(btn) {
@@ -732,14 +655,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Sayfa ilk yüklendiğinde kaydedilmiş profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        const bottomUserName = document.querySelector('.bottom-user .name');
+        const bottomUserRole = document.querySelector('.bottom-user .role');
+        const topUserName = document.querySelector('.user-profile span');
+        
+        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (bottomUserRole) bottomUserRole.textContent = formatRoleName(profileData.role);
+        if (topUserName) topUserName.textContent = profileData.fullName;
+    }
+    
     document.querySelector('.menu-item[data-page="home"]').click();
 });
 
 // Modal dışına tıklandığında kapatma
 window.onclick = function(event) {
     const modal = document.getElementById('userModal');
+    const taskModal = document.getElementById('taskModal');
     if (event.target == modal) {
         modal.style.display = 'none';
+    }
+    if (event.target == taskModal) {
+        taskModal.style.display = 'none';
     }
 }
 </script>
