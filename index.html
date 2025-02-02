@@ -789,6 +789,186 @@ window.onclick = function(event) {
             modal.style.display = 'none';
         }
     });
+    // Görev detayları için global değişken
+let currentTaskId = null;
+
+// Görev detaylarını göster
+function showTaskDetail(taskId) {
+    currentTaskId = taskId;
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const task = tasks.find(t => t.id === taskId) || {
+        id: taskId,
+        title: 'Rapor Hazırlama',
+        description: 'Aylık faaliyet raporunun hazırlanması',
+        assignee: '1',
+        dueDate: '2023-12-25',
+        priority: 'medium',
+        points: 10,
+        status: 'pending',
+        progress: 30,
+        timeline: [
+            {
+                date: '2023-12-01',
+                action: 'Görev oluşturuldu',
+                user: 'Ahmet Yılmaz'
+            }
+        ],
+        comments: []
+    };
+
+    // Modal içeriğini doldur
+    document.getElementById('taskDetailTitle').textContent = task.title;
+    document.getElementById('taskDetailDescription').textContent = task.description;
+    document.getElementById('taskDetailAssignee').textContent = getAssigneeName(task.assignee);
+    document.getElementById('taskDetailDueDate').textContent = formatDate(task.dueDate);
+    document.getElementById('taskDetailPoints').textContent = `${task.points} Puan`;
+    document.getElementById('taskStatusSelect').value = task.status;
+    
+    // İlerleme çubuğunu güncelle
+    const progressBar = document.getElementById('taskProgress');
+    if (progressBar) {
+        progressBar.style.width = `${task.progress || 0}%`;
+    }
+
+    // Öncelik rozetini güncelle
+    const priorityBadge = document.getElementById('taskPriorityBadge');
+    if (priorityBadge) {
+        priorityBadge.className = `priority-indicator priority-${task.priority}`;
+        priorityBadge.textContent = formatPriority(task.priority);
+    }
+
+    // Görev geçmişini güncelle
+    updateTaskTimeline(task.timeline || []);
+
+    // Yorumları yükle
+    loadComments(task.comments || []);
+
+    // Modalı göster
+    document.getElementById('taskDetailModal').style.display = 'block';
+}
+
+// Görev geçmişini güncelle
+function updateTaskTimeline(timeline) {
+    const timelineContainer = document.getElementById('taskTimeline');
+    if (!timelineContainer) return;
+
+    timelineContainer.innerHTML = timeline.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-date">${formatDate(item.date)}</div>
+            <div class="timeline-content">
+                <strong>${item.user}</strong> ${item.action}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Yorumları yükle
+function loadComments(comments) {
+    const commentsContainer = document.getElementById('taskComments');
+    if (!commentsContainer) return;
+
+    if (comments.length === 0) {
+        commentsContainer.innerHTML = '<p class="no-comments">Henüz yorum yapılmamış.</p>';
+        return;
+    }
+
+    commentsContainer.innerHTML = comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <span class="comment-author">${comment.author}</span>
+                <span class="comment-date">${formatDate(comment.date)}</span>
+            </div>
+            <div class="comment-content">${comment.text}</div>
+        </div>
+    `).join('');
+}
+
+// Yorum ekle
+function addComment(event) {
+    event.preventDefault();
+    if (!currentTaskId) return;
+
+    const commentText = event.target.comment.value;
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+
+    if (taskIndex === -1) {
+        tasks.push({
+            id: currentTaskId,
+            comments: []
+        });
+    }
+
+    const task = tasks[taskIndex] || tasks[tasks.length - 1];
+    if (!task.comments) {
+        task.comments = [];
+    }
+
+    const comment = {
+        id: Date.now(),
+        text: commentText,
+        author: JSON.parse(localStorage.getItem('profileData'))?.fullName || 'Anonim',
+        date: new Date().toISOString()
+    };
+
+    task.comments.push(comment);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    // Yorum listesini güncelle
+    loadComments(task.comments);
+    event.target.reset();
+    showNotification('Yorum başarıyla eklendi', 'success');
+}
+
+// Görev durumunu güncelle
+function updateTaskStatus(newStatus) {
+    if (!currentTaskId) return;
+
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+
+    if (taskIndex === -1) {
+        tasks.push({
+            id: currentTaskId,
+            status: newStatus,
+            timeline: []
+        });
+    }
+
+    const task = tasks[taskIndex] || tasks[tasks.length - 1];
+    const oldStatus = task.status;
+    task.status = newStatus;
+
+    // Görev geçmişine ekle
+    if (!task.timeline) {
+        task.timeline = [];
+    }
+
+    task.timeline.push({
+        date: new Date().toISOString(),
+        action: `Görev durumu "${formatStatus(oldStatus)}" durumundan "${formatStatus(newStatus)}" durumuna güncellendi`,
+        user: JSON.parse(localStorage.getItem('profileData'))?.fullName || 'Anonim'
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    updateTaskTimeline(task.timeline);
+    showNotification('Görev durumu güncellendi', 'success');
+}
+
+// Durum formatla
+function formatStatus(status) {
+    const statuses = {
+        pending: 'Beklemede',
+        'in-progress': 'Devam Ediyor',
+        completed: 'Tamamlandı'
+    };
+    return statuses[status] || status;
+}
+
+// Modal kapatma
+function closeTaskDetailModal() {
+    document.getElementById('taskDetailModal').style.display = 'none';
+    currentTaskId = null;
 }
 </script>
 </body>
