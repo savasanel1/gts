@@ -267,6 +267,26 @@ const pageContents = {
     `,
     tasks: `
         <div class="dashboard-content">
+            <div class="task-filters">
+                <div class="filter-group">
+                    <select id="taskStatusFilter" onchange="filterTasks()">
+                        <option value="all">Tüm Görevler</option>
+                        <option value="pending">Bekleyen</option>
+                        <option value="in-progress">Devam Eden</option>
+                        <option value="completed">Tamamlanan</option>
+                    </select>
+                    <select id="taskPriorityFilter" onchange="filterTasks()">
+                        <option value="all">Tüm Öncelikler</option>
+                        <option value="high">Yüksek</option>
+                        <option value="medium">Orta</option>
+                        <option value="low">Düşük</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <input type="text" id="taskSearch" placeholder="Görev ara..." onkeyup="filterTasks()">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
             <div class="dashboard-cards">
                 <div class="card">
                     <div class="card-icon">
@@ -312,11 +332,15 @@ const pageContents = {
                         <i class="fas fa-plus"></i> Yeni Görev
                     </button>
                 </div>
-                <div class="task-list">
+                <div class="task-list" id="taskList">
                     <div class="task-item" onclick="showTaskDetail(1)">
+                        <div class="task-priority priority-high"></div>
                         <div class="task-info">
                             <h4>Rapor Hazırlama</h4>
                             <p>Aylık faaliyet raporunun hazırlanması</p>
+                            <div class="task-progress">
+                                <div class="progress-bar" style="width: 30%"></div>
+                            </div>
                         </div>
                         <div class="task-meta">
                             <span class="deadline">Son Tarih: 25.12.2023</span>
@@ -324,9 +348,13 @@ const pageContents = {
                         </div>
                     </div>
                     <div class="task-item" onclick="showTaskDetail(2)">
+                        <div class="task-priority priority-medium"></div>
                         <div class="task-info">
                             <h4>Toplantı Organizasyonu</h4>
                             <p>Departman toplantısının organize edilmesi</p>
+                            <div class="task-progress">
+                                <div class="progress-bar" style="width: 60%"></div>
+                            </div>
                         </div>
                         <div class="task-meta">
                             <span class="deadline">Son Tarih: 20.12.2023</span>
