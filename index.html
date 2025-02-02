@@ -153,6 +153,53 @@
                     <input type="number" name="taskPoints" min="1" max="100" required>
                 </div>
                 <button type="submit" class="save-btn">Görevi Kaydet</button>
+                <!-- Task Detail Modal -->
+<div id="taskDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTaskDetailModal()">&times;</span>
+        <div class="task-detail-header">
+            <h2 id="taskDetailTitle">Görev Detayı</h2>
+            <div class="task-status-wrapper">
+                <select id="taskStatusSelect" onchange="updateTaskStatus(this.value)">
+                    <option value="pending">Beklemede</option>
+                    <option value="in-progress">Devam Ediyor</option>
+                    <option value="completed">Tamamlandı</option>
+                </select>
+            </div>
+        </div>
+        <div class="task-detail-content">
+            <div class="detail-group">
+                <label>Açıklama</label>
+                <p id="taskDetailDescription"></p>
+            </div>
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Atanan Kişi</label>
+                    <p id="taskDetailAssignee"></p>
+                </div>
+                <div class="detail-group">
+                    <label>Son Tarih</label>
+                    <p id="taskDetailDueDate"></p>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-group">
+                    <label>Öncelik</label>
+                    <p id="taskDetailPriority"></p>
+                </div>
+                <div class="detail-group">
+                    <label>Puan</label>
+                    <p id="taskDetailPoints"></p>
+                </div>
+            </div>
+            <div class="task-comments">
+                <h3>Yorumlar</h3>
+                <div class="comments-list" id="taskComments">
+                    <!-- Yorumlar buraya gelecek -->
+                </div>
+                <form id="commentForm" onsubmit="addComment(event)">
+                    <textarea name="comment" placeholder="Yorumunuzu yazın..." required></textarea>
+                    <button type="submit" class="save-btn">Yorum Ekle</button>
             </form>
         </div>
     </div>
@@ -222,7 +269,7 @@ const pageContents = {
                     <button class="new-task-btn" onclick="openTaskModal()">Yeni Görev</button>
                 </div>
                 <div class="task-list">
-                    <div class="task-item">
+                    <div class="task-item" onclick="showTaskDetail(${task.id})">
                         <div class="task-info">
                             <h4>Rapor Hazırlama</h4>
                             <p>Aylık faaliyet raporunun hazırlanması</p>
@@ -232,7 +279,7 @@ const pageContents = {
                             <span class="status pending">Beklemede</span>
                         </div>
                     </div>
-                    <div class="task-item">
+                    <div class="task-item" onclick="showTaskDetail(${task.id})">
                         <div class="task-info">
                             <h4>Toplantı Organizasyonu</h4>
                             <p>Departman toplantısının organize edilmesi</p>
@@ -770,6 +817,127 @@ window.onclick = function(event) {
     if (event.target == taskModal) {
         taskModal.style.display = 'none';
     }
+    // Görev detaylarını göster
+function showTaskDetail(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const task = tasks.find(t => t.id === taskId);
+    
+    if (!task) return;
+
+    // Modal içeriğini doldur
+    document.getElementById('taskDetailTitle').textContent = task.title;
+    document.getElementById('taskDetailDescription').textContent = task.description;
+    document.getElementById('taskDetailAssignee').textContent = getAssigneeName(task.assignee);
+    document.getElementById('taskDetailDueDate').textContent = formatDate(task.dueDate);
+    document.getElementById('taskDetailPriority').textContent = formatPriority(task.priority);
+    document.getElementById('taskDetailPoints').textContent = `${task.points} Puan`;
+    
+    // Durum seçimini ayarla
+    document.getElementById('taskStatusSelect').value = task.status;
+    
+    // Yorumları yükle
+    loadComments(taskId);
+    
+    // Modalı aç
+    document.getElementById('taskDetailModal').style.display = 'block';
+    
+    // Aktif görev ID'sini sakla
+    currentTaskId = taskId;
+}
+
+// Görev detay modalını kapat
+function closeTaskDetailModal() {
+    document.getElementById('taskDetailModal').style.display = 'none';
+    currentTaskId = null;
+}
+
+// Görev durumunu güncelle
+function updateTaskStatus(newStatus) {
+    if (!currentTaskId) return;
+    
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+    
+    if (taskIndex === -1) return;
+    
+    tasks[taskIndex].status = newStatus;
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    // Görev listesini güncelle
+    updateTaskList();
+    showNotification('Görev durumu güncellendi', 'success');
+}
+
+// Yorum ekle
+function addComment(event) {
+    event.preventDefault();
+    if (!currentTaskId) return;
+    
+    const commentText = event.target.comment.value;
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+    
+    if (taskIndex === -1) return;
+    
+    if (!tasks[taskIndex].comments) {
+        tasks[taskIndex].comments = [];
+    }
+    
+    const comment = {
+        id: Date.now(),
+        text: commentText,
+        author: JSON.parse(localStorage.getItem('profileData'))?.fullName || 'Anonim',
+        date: new Date().toISOString()
+    };
+    
+    tasks[taskIndex].comments.push(comment);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    
+    // Yorum listesini güncelle
+    loadComments(currentTaskId);
+    event.target.reset();
+    showNotification('Yorum eklendi', 'success');
+}
+
+// Yorumları yükle
+function loadComments(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const task = tasks.find(t => t.id === taskId);
+    const commentsContainer = document.getElementById('taskComments');
+    
+    if (!task || !task.comments) {
+        commentsContainer.innerHTML = '<p>Henüz yorum yapılmamış.</p>';
+        return;
+    }
+    
+    commentsContainer.innerHTML = task.comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <span class="comment-author">${comment.author}</span>
+                <span class="comment-date">${formatDate(comment.date)}</span>
+            </div>
+            <p>${comment.text}</p>
+        </div>
+    `).join('');
+}
+
+// Yardımcı fonksiyonlar
+function getAssigneeName(assigneeId) {
+    const assignees = {
+        '1': 'Ahmet Yılmaz',
+        '2': 'Mehmet Demir',
+        '3': 'Ayşe Kaya'
+    };
+    return assignees[assigneeId] || 'Atanmamış';
+}
+
+function formatPriority(priority) {
+    const priorities = {
+        low: 'Düşük',
+        medium: 'Orta',
+        high: 'Yüksek'
+    };
+    return priorities[priority] || priority;
 }
 </script>
 </body>
