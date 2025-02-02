@@ -333,34 +333,7 @@ const pageContents = {
                     </button>
                 </div>
                 <div class="task-list" id="taskList">
-                    <div class="task-item" onclick="showTaskDetail(1)">
-                        <div class="task-priority priority-high"></div>
-                        <div class="task-info">
-                            <h4>Rapor Hazırlama</h4>
-                            <p>Aylık faaliyet raporunun hazırlanması</p>
-                            <div class="task-progress">
-                                <div class="progress-bar" style="width: 30%"></div>
-                            </div>
-                        </div>
-                        <div class="task-meta">
-                            <span class="deadline">Son Tarih: 25.12.2023</span>
-                            <span class="status pending">Beklemede</span>
-                        </div>
-                    </div>
-                    <div class="task-item" onclick="showTaskDetail(2)">
-                        <div class="task-priority priority-medium"></div>
-                        <div class="task-info">
-                            <h4>Toplantı Organizasyonu</h4>
-                            <p>Departman toplantısının organize edilmesi</p>
-                            <div class="task-progress">
-                                <div class="progress-bar" style="width: 60%"></div>
-                            </div>
-                        </div>
-                        <div class="task-meta">
-                            <span class="deadline">Son Tarih: 20.12.2023</span>
-                            <span class="status in-progress">Devam Ediyor</span>
-                        </div>
-                    </div>
+                    <!-- Görevler dinamik olarak buraya eklenecek -->
                 </div>
             </div>
         </div>
@@ -409,19 +382,6 @@ const pageContents = {
                             <div class="form-group">
                                 <label>E-posta</label>
                                 <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Rol</label>
-                                <select name="userRole" required ${!isSuperAdmin() ? 'disabled' : ''}>
-                                    ${isSuperAdmin() ? `
-                                        <option value="super_admin">Süper Admin</option>
-                                        <option value="admin">Yönetici</option>
-                                        <option value="manager">Amir</option>
-                                        <option value="user">Personel</option>
-                                    ` : `
-                                        <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
-                                    `}
-                                </select>
                             </div>
                             <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
                         </form>
@@ -481,23 +441,7 @@ const pageContents = {
         </div>
     `
 };
-
-// Temel fonksiyonları tanımla
-function isSuperAdmin() {
-    const profileData = JSON.parse(localStorage.getItem('profileData'));
-    return profileData && profileData.role === 'super_admin';
-}
-
-function formatRoleName(role) {
-    const roles = {
-        super_admin: 'Süper Admin',
-        admin: 'Yönetici',
-        manager: 'Amir',
-        user: 'Personel'
-    };
-    return roles[role] || role;
-}
-        // Modal işlemleri
+        // Temel fonksiyonlar
 function openTaskModal() {
     document.getElementById('taskModal').style.display = 'block';
 }
@@ -526,8 +470,8 @@ function saveUser(event) {
         <td><span class="role-badge role-${formData.get('role')}">${formatRoleName(formData.get('role'))}</span></td>
         <td><span class="status-${formData.get('status')}">${formData.get('status') === 'active' ? 'Aktif' : 'Pasif'}</span></td>
         <td>
-            <button class="action-btn edit-btn" onclick="editUser(this)"><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fas fa-trash"></i></button>
+            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
         </td>
     `;
     document.getElementById('userTableBody').appendChild(tr);
@@ -560,41 +504,52 @@ function previewImage(event) {
 function updateProfile(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    
     const profileData = {
         fullName: formData.get('fullName'),
-        email: formData.get('email'),
-        role: formData.get('userRole') || JSON.parse(localStorage.getItem('profileData'))?.role || 'user'
+        email: formData.get('email')
     };
-    
     localStorage.setItem('profileData', JSON.stringify(profileData));
-    
-    document.querySelector('.bottom-user .name').textContent = profileData.fullName;
-    document.querySelector('.bottom-user .role').textContent = formatRoleName(profileData.role);
-    document.querySelector('.user-profile span').textContent = profileData.fullName;
-    
-    showNotification('Profil bilgileri başarıyla güncellendi', 'success');
+    showNotification('Profil bilgileri güncellendi', 'success');
 }
 
 function updateRegistry(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     localStorage.setItem('registryData', JSON.stringify(Object.fromEntries(formData)));
-    showNotification('Sicil bilgileri başarıyla güncellendi', 'success');
+    showNotification('Sicil bilgileri güncellendi', 'success');
 }
 
 function updatePassword(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     if (formData.get('newPassword') !== formData.get('confirmPassword')) {
-        showNotification('Yeni şifreler eşleşmiyor', 'error');
+        showNotification('Şifreler eşleşmiyor', 'error');
         return;
     }
     event.target.reset();
-    showNotification('Şifre başarıyla güncellendi', 'success');
+    showNotification('Şifre güncellendi', 'success');
+}
+
+// Görev filtreleme
+function filterTasks() {
+    const statusFilter = document.getElementById('taskStatusFilter').value;
+    const priorityFilter = document.getElementById('taskPriorityFilter').value;
+    const searchText = document.getElementById('taskSearch').value.toLowerCase();
+    
+    // Filtreleme işlemleri burada yapılacak
 }
 
 // Yardımcı fonksiyonlar
+function formatRoleName(role) {
+    const roles = {
+        super_admin: 'Süper Admin',
+        admin: 'Yönetici',
+        manager: 'Amir',
+        user: 'Personel'
+    };
+    return roles[role] || role;
+}
+
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -605,44 +560,18 @@ function showNotification(message, type = 'success') {
 
 // Sayfa yükleme ve navigasyon
 document.addEventListener('DOMContentLoaded', function() {
-    // Menü işlemleri
     const menuItems = document.querySelectorAll('.menu-item');
     menuItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
-            // Aktif menü öğesini güncelle
             menuItems.forEach(i => i.classList.remove('active'));
             this.classList.add('active');
             
-            // Sayfa başlığını güncelle
             const pageTitle = this.textContent.trim();
             document.getElementById('pageTitle').textContent = pageTitle;
             
-            // Sayfa içeriğini güncelle
             const page = this.getAttribute('data-page');
             document.getElementById('contentArea').innerHTML = pageContents[page] || '';
-            
-            // Ayarlar sayfası için ek işlemler
-            if (page === 'settings') {
-                const profileData = JSON.parse(localStorage.getItem('profileData'));
-                if (profileData) {
-                    document.querySelector('input[name="fullName"]').value = profileData.fullName;
-                    document.querySelector('input[name="email"]').value = profileData.email;
-                }
-                
-                const registryData = JSON.parse(localStorage.getItem('registryData'));
-                if (registryData) {
-                    Object.keys(registryData).forEach(key => {
-                        const input = document.querySelector(`input[name="${key}"]`);
-                        if (input) input.value = registryData[key];
-                    });
-                }
-                
-                const savedImage = localStorage.getItem('profileImage');
-                if (savedImage) {
-                    document.getElementById('profileImage').src = savedImage;
-                }
-            }
         });
     });
 
@@ -655,58 +584,7 @@ window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
     }
-    // Görev filtreleme ve arama
-function filterTasks() {
-    const statusFilter = document.getElementById('taskStatusFilter').value;
-    const priorityFilter = document.getElementById('taskPriorityFilter').value;
-    const searchText = document.getElementById('taskSearch').value.toLowerCase();
-    
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    const filteredTasks = tasks.filter(task => {
-        const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
-        const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
-        const matchesSearch = task.title.toLowerCase().includes(searchText) || 
-                            task.description.toLowerCase().includes(searchText);
-        
-        return matchesStatus && matchesPriority && matchesSearch;
-    });
-    
-    updateTaskList(filteredTasks);
 }
-
-// Görev listesini güncelle
-function updateTaskList(tasks = []) {
-    const taskList = document.getElementById('taskList');
-    if (!taskList) return;
-    
-    taskList.innerHTML = tasks.map(task => `
-        <div class="task-item" onclick="showTaskDetail(${task.id})">
-            <div class="task-priority priority-${task.priority}"></div>
-            <div class="task-info">
-                <h4>${task.title}</h4>
-                <p>${task.description}</p>
-                <div class="task-progress">
-                    <div class="progress-bar" style="width: ${task.progress || 0}%"></div>
-                </div>
-            </div>
-            <div class="task-meta">
-                <span class="deadline">Son Tarih: ${formatDate(task.dueDate)}</span>
-                <span class="status ${task.status}">${formatStatus(task.status)}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-// Sayfa yüklendiğinde görevleri yükle
-document.addEventListener('DOMContentLoaded', function() {
-    // ... mevcut kodlar ...
-    
-    // Görevler sayfası açıldığında
-    if (page === 'tasks') {
-        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-        updateTaskList(tasks);
-    }
-});
 </script>
 </body>
 </html>
