@@ -634,7 +634,97 @@ function showNotification(message, type = 'success') {
         notificationDiv.remove();
     }, 3000);
 }
+// Varsayılan süper admin kullanıcısını oluştur (eğer yoksa)
+if (!localStorage.getItem('profileData')) {
+    const defaultProfile = {
+        fullName: 'Ahmet Yılmaz',
+        email: 'ahmet@aybu.edu.tr',
+        role: 'super_admin'
+    };
+    localStorage.setItem('profileData', JSON.stringify(defaultProfile));
+}
 
+// Profil verilerini yükle fonksiyonu
+function loadSavedData() {
+    // Profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        // Form alanlarını doldur
+        const fullNameInput = document.querySelector('input[name="fullName"]');
+        const emailInput = document.querySelector('input[name="email"]');
+        const roleSelect = document.querySelector('select[name="userRole"]');
+        
+        if (fullNameInput) fullNameInput.value = profileData.fullName;
+        if (emailInput) emailInput.value = profileData.email;
+        if (roleSelect) {
+            roleSelect.innerHTML = isSuperAdmin() ? `
+                <option value="super_admin" ${profileData.role === 'super_admin' ? 'selected' : ''}>Süper Admin</option>
+                <option value="admin" ${profileData.role === 'admin' ? 'selected' : ''}>Yönetici</option>
+                <option value="manager" ${profileData.role === 'manager' ? 'selected' : ''}>Amir</option>
+                <option value="user" ${profileData.role === 'user' ? 'selected' : ''}>Personel</option>
+            ` : `
+                <option value="${profileData.role}">${formatRoleName(profileData.role)}</option>
+            `;
+            roleSelect.disabled = !isSuperAdmin();
+        }
+
+        // Sol alttaki ve üstteki bilgileri güncelle
+        const bottomUserName = document.querySelector('.bottom-user .name');
+        const bottomUserRole = document.querySelector('.bottom-user .role');
+        const topUserName = document.querySelector('.user-profile span');
+        
+        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (bottomUserRole) bottomUserRole.textContent = formatRoleName(profileData.role);
+        if (topUserName) topUserName.textContent = profileData.fullName;
+    }
+
+    // Profil fotoğrafını yükle
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+        const profileImage = document.getElementById('profileImage');
+        if (profileImage) {
+            profileImage.src = savedImage;
+        }
+    }
+
+    // Sicil bilgilerini yükle
+    const registryData = JSON.parse(localStorage.getItem('registryData'));
+    if (registryData) {
+        const inputs = {
+            registryNumber: document.querySelector('input[name="registryNumber"]'),
+            department: document.querySelector('input[name="department"]'),
+            title: document.querySelector('input[name="title"]'),
+            startDate: document.querySelector('input[name="startDate"]')
+        };
+
+        Object.keys(inputs).forEach(key => {
+            if (inputs[key] && registryData[key]) {
+                inputs[key].value = registryData[key];
+            }
+        });
+    }
+}
+
+// Sayfa yüklendiğinde
+document.addEventListener('DOMContentLoaded', function() {
+    // Mevcut event listener'lar...
+    
+    // Sayfa ilk yüklendiğinde kaydedilmiş profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        const bottomUserName = document.querySelector('.bottom-user .name');
+        const bottomUserRole = document.querySelector('.bottom-user .role');
+        const topUserName = document.querySelector('.user-profile span');
+        
+        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (bottomUserRole) bottomUserRole.textContent = formatRoleName(profileData.role);
+        if (topUserName) topUserName.textContent = profileData.fullName;
+    }
+
+    // Ana sayfayı göster
+    document.querySelector('.menu-item[data-page="home"]').click();
+});
+    
 // Sayfa yüklendiğinde
 document.addEventListener('DOMContentLoaded', function() {
     const menuItems = document.querySelectorAll('.menu-item');
