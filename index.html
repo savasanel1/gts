@@ -496,9 +496,65 @@ function updateProfile(event) {
         email: formData.get('email')
     };
     
+    // Profil bilgilerini localStorage'a kaydet
     localStorage.setItem('profileData', JSON.stringify(profileData));
+    
+    // Sol alttaki kullanıcı adını güncelle
+    document.querySelector('.bottom-user .name').textContent = profileData.fullName;
+    
+    // Sağ üstteki kullanıcı adını güncelle
+    document.querySelector('.user-profile span').textContent = profileData.fullName;
+    
     showNotification('Profil bilgileri başarıyla güncellendi', 'success');
 }
+
+// Sayfa yüklendiğinde profil bilgilerini yükle
+function loadSavedData() {
+    // Mevcut profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        // Form alanlarını doldur
+        document.querySelector('input[name="fullName"]').value = profileData.fullName;
+        document.querySelector('input[name="email"]').value = profileData.email;
+        
+        // Sol alttaki ve sağ üstteki isimleri güncelle
+        const bottomUserName = document.querySelector('.bottom-user .name');
+        const topUserName = document.querySelector('.user-profile span');
+        
+        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (topUserName) topUserName.textContent = profileData.fullName;
+    }
+
+    // Profil fotoğrafını yükle
+    const savedImage = localStorage.getItem('profileImage');
+    if (savedImage) {
+        document.getElementById('profileImage').src = savedImage;
+    }
+
+    // Sicil bilgilerini yükle
+    const registryData = JSON.parse(localStorage.getItem('registryData'));
+    if (registryData) {
+        document.querySelector('input[name="registryNumber"]').value = registryData.registryNumber;
+        document.querySelector('input[name="department"]').value = registryData.department;
+        document.querySelector('input[name="title"]').value = registryData.title;
+        document.querySelector('input[name="startDate"]').value = registryData.startDate;
+    }
+}
+
+// Sayfa yüklendiğinde
+document.addEventListener('DOMContentLoaded', function() {
+    // Mevcut event listener'lar...
+    
+    // Sayfa ilk yüklendiğinde kaydedilmiş profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        const bottomUserName = document.querySelector('.bottom-user .name');
+        const topUserName = document.querySelector('.user-profile span');
+        
+        if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (topUserName) topUserName.textContent = profileData.fullName;
+    }
+});
 
 // Sicil bilgilerini güncelleme
 function updateRegistry(event) {
