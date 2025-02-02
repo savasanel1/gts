@@ -45,7 +45,7 @@
             <div class="role">Yönetici</div>
         </div>
     </div>
-    <!-- Main Content -->
+        <!-- Main Content -->
     <div class="main-content">
         <!-- Top Bar -->
         <div class="top-bar">
@@ -69,7 +69,8 @@
             <!-- Burası dinamik olarak değişecek -->
         </div>
     </div>
-        <!-- User Modal -->
+
+    <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">&times;</span>
@@ -111,51 +112,51 @@
             </form>
         </div>
     </div>
-    <!-- Task Modal -->
-<div id="taskModal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeTaskModal()">&times;</span>
-        <h2>Yeni Görev Ekle</h2>
-        <form id="taskForm" onsubmit="saveTask(event)">
-            <div class="form-group">
-                <label>Görev Başlığı</label>
-                <input type="text" name="taskTitle" required>
-            </div>
-            <div class="form-group">
-                <label>Görev Açıklaması</label>
-                <textarea name="taskDescription" rows="3" required></textarea>
-            </div>
-            <div class="form-group">
-                <label>Atanacak Kişi</label>
-                <select name="assignee" required>
-                    <option value="">Seçiniz...</option>
-                    <option value="1">Ahmet Yılmaz</option>
-                    <option value="2">Mehmet Demir</option>
-                    <option value="3">Ayşe Kaya</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Son Tarih</label>
-                <input type="date" name="dueDate" required>
-            </div>
-            <div class="form-group">
-                <label>Öncelik</label>
-                <select name="priority" required>
-                    <option value="low">Düşük</option>
-                    <option value="medium">Orta</option>
-                    <option value="high">Yüksek</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Görev Puanı</label>
-                <input type="number" name="taskPoints" min="1" max="100" required>
-            </div>
-            <button type="submit" class="save-btn">Görevi Kaydet</button>
-        </form>
-    </div>
-</div>
 
-<script>
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Yeni Görev Ekle</h2>
+            <form id="taskForm" onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label>Görev Başlığı</label>
+                    <input type="text" name="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Görev Açıklaması</label>
+                    <textarea name="taskDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Atanacak Kişi</label>
+                    <select name="assignee" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="1">Ahmet Yılmaz</option>
+                        <option value="2">Mehmet Demir</option>
+                        <option value="3">Ayşe Kaya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Son Tarih</label>
+                    <input type="date" name="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Öncelik</label>
+                    <select name="priority" required>
+                        <option value="low">Düşük</option>
+                        <option value="medium">Orta</option>
+                        <option value="high">Yüksek</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Görev Puanı</label>
+                    <input type="number" name="taskPoints" min="1" max="100" required>
+                </div>
+                <button type="submit" class="save-btn">Görevi Kaydet</button>
+            </form>
+        </div>
+    </div>
+    <script>
 const pageContents = {
     home: `
         <div class="dashboard-content">
@@ -227,7 +228,7 @@ const pageContents = {
             </div>
         </div>
     `,
-        users: `
+    users: `
         <div class="user-management-container">
             <div class="user-actions">
                 <button class="add-user-btn" onclick="openUserModal()">
@@ -261,7 +262,7 @@ const pageContents = {
             </table>
         </div>
     `,
-    tasks: `
+        tasks: `
         <div class="dashboard-content">
             <div class="dashboard-cards">
                 <div class="card">
@@ -304,7 +305,7 @@ const pageContents = {
             <div class="recent-tasks">
                 <div class="section-header">
                     <h2>Son Görevler</h2>
-                    <button class="new-task-btn">Yeni Görev</button>
+                    <button class="new-task-btn" onclick="openTaskModal()">Yeni Görev</button>
                 </div>
                 <div class="task-list">
                     <div class="task-item">
@@ -436,8 +437,40 @@ const pageContents = {
     </div>
 `
 };
-    // Varsayılan şifre
-const DEFAULT_PASSWORD = "123456";
+        // Görev işlemleri için fonksiyonlar
+function openTaskModal() {
+    document.getElementById('taskModal').style.display = 'block';
+}
+
+function closeTaskModal() {
+    document.getElementById('taskModal').style.display = 'none';
+}
+
+function saveTask(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const task = {
+        id: Date.now(),
+        title: formData.get('taskTitle'),
+        description: formData.get('taskDescription'),
+        assignee: formData.get('assignee'),
+        dueDate: formData.get('dueDate'),
+        priority: formData.get('priority'),
+        points: formData.get('taskPoints'),
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+
+    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    updateTaskList();
+    closeTaskModal();
+    event.target.reset();
+    showNotification('Görev başarıyla eklendi', 'success');
+}
 
 // Profil fotoğrafı önizleme
 function previewImage(event) {
@@ -484,6 +517,7 @@ function updateRegistry(event) {
 }
 
 // Şifre değiştirme
+const DEFAULT_PASSWORD = "123456";
 function updatePassword(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -509,31 +543,6 @@ function updatePassword(event) {
     localStorage.setItem('userPassword', newPassword);
     showNotification('Şifreniz başarıyla güncellendi', 'success');
     event.target.reset();
-}
-
-// Kaydedilmiş verileri yükle
-function loadSavedData() {
-    // Profil bilgilerini yükle
-    const profileData = JSON.parse(localStorage.getItem('profileData'));
-    if (profileData) {
-        document.querySelector('input[name="fullName"]').value = profileData.fullName;
-        document.querySelector('input[name="email"]').value = profileData.email;
-    }
-
-    // Profil fotoğrafını yükle
-    const savedImage = localStorage.getItem('profileImage');
-    if (savedImage) {
-        document.getElementById('profileImage').src = savedImage;
-    }
-
-    // Sicil bilgilerini yükle
-    const registryData = JSON.parse(localStorage.getItem('registryData'));
-    if (registryData) {
-        document.querySelector('input[name="registryNumber"]').value = registryData.registryNumber;
-        document.querySelector('input[name="department"]').value = registryData.department;
-        document.querySelector('input[name="title"]').value = registryData.title;
-        document.querySelector('input[name="startDate"]').value = registryData.startDate;
-    }
 }
 
 // Kullanıcı işlemleri
@@ -629,98 +638,7 @@ window.onclick = function(event) {
     if (event.target == modal) {
         modal.style.display = 'none';
     }
-// Görev işlemleri için fonksiyonlar
-function openTaskModal() {
-    document.getElementById('taskModal').style.display = 'block';
 }
-
-function closeTaskModal() {
-    document.getElementById('taskModal').style.display = 'none';
-}
-
-function saveTask(event) {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    
-    // Yeni görev objesi oluştur
-    const task = {
-        id: Date.now(),
-        title: formData.get('taskTitle'),
-        description: formData.get('taskDescription'),
-        assignee: formData.get('assignee'),
-        dueDate: formData.get('dueDate'),
-        priority: formData.get('priority'),
-        points: formData.get('taskPoints'),
-        status: 'pending',
-        createdAt: new Date().toISOString()
-    };
-
-    // Mevcut görevleri localStorage'dan al
-    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.push(task);
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-
-    // Görev listesini güncelle
-    updateTaskList();
-    
-    // Modal'ı kapat ve formu temizle
-    closeTaskModal();
-    event.target.reset();
-    
-    showNotification('Görev başarıyla eklendi', 'success');
-}
-
-function updateTaskList() {
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    const taskList = document.querySelector('.task-list');
-    if (!taskList) return;
-
-    taskList.innerHTML = tasks.map(task => `
-        <div class="task-item" data-task-id="${task.id}">
-            <div class="task-info">
-                <h4>${task.title}</h4>
-                <p>${task.description}</p>
-            </div>
-            <div class="task-meta">
-                <span class="deadline">Son Tarih: ${formatDate(task.dueDate)}</span>
-                <span class="priority-badge priority-${task.priority}">${getPriorityText(task.priority)}</span>
-                <span class="task-points">${task.points} Puan</span>
-                <span class="status ${task.status}">${getStatusText(task.status)}</span>
-            </div>
-        </div>
-    `).join('');
-}
-
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('tr-TR', options);
-}
-
-function getPriorityText(priority) {
-    const priorities = {
-        low: 'Düşük',
-        medium: 'Orta',
-        high: 'Yüksek'
-    };
-    return priorities[priority] || priority;
-}
-
-function getStatusText(status) {
-    const statuses = {
-        pending: 'Beklemede',
-        'in-progress': 'Devam Ediyor',
-        completed: 'Tamamlandı'
-    };
-    return statuses[status] || status;
-}
-
-// Sayfa yüklendiğinde görev listesini güncelle
-document.addEventListener('DOMContentLoaded', function() {
-    // Mevcut event listener'lar...
-    
-    // Görev listesini güncelle
-    updateTaskList();
-});
 </script>
 </body>
 </html>
