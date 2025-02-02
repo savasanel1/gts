@@ -425,13 +425,26 @@ function updateRegistry(event) {
 function updatePassword(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    if (formData.get('newPassword') !== formData.get('confirmPassword')) {
-        showNotification('Yeni şifreler eşleşmiyor', 'error');
-        return;
+    const newPassword = formData.get('newPassword');
+    const confirmPassword = formData.get('confirmPassword');
+
+    // Şifre kontrolü
+    if (newPassword !== confirmPassword) {
+        showNotification('Yeni şifreler eşleşmiyor!', 'error');
+        return false;
     }
-    // API çağrısı yapılacak
-    showNotification('Şifreniz başarıyla güncellendi');
+
+    if (newPassword.length < 6) {
+        showNotification('Şifre en az 6 karakter olmalıdır!', 'error');
+        return false;
+    }
+
+    // Şifre başarıyla değiştirildi
+    showNotification('Şifreniz başarıyla güncellendi', 'success');
     event.target.reset();
+    
+    // Şifreyi localStorage'a kaydedelim
+    localStorage.setItem('userPassword', newPassword);
 }
 
 // Bildirim gösterme
@@ -522,9 +535,85 @@ function previewImage(event) {
 function updateProfile(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    // API çağrısı yapılacak
-    showNotification('Profil bilgileri başarıyla güncellendi');
+    
+    // Profil bilgilerini localStorage'a kaydet
+    const profileData = {
+        fullName: formData.get('fullName'),
+        email: formData.get('email'),
+        profileImage: document.getElementById('profileImage').src
+    };
+    
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+    showNotification('Profil bilgileri başarıyla güncellendi', 'success');
 }
+
+// Sicil bilgilerini güncelleme
+function updateRegistry(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    // Sicil bilgilerini localStorage'a kaydet
+    const registryData = {
+        registryNumber: formData.get('registryNumber'),
+        department: formData.get('department'),
+        title: formData.get('title'),
+        startDate: formData.get('startDate')
+    };
+    
+    localStorage.setItem('registryData', JSON.stringify(registryData));
+    showNotification('Sicil bilgileri başarıyla güncellendi', 'success');
+}
+
+// Sayfa yüklendiğinde kaydedilmiş verileri yükle
+function loadSavedData() {
+    // Profil bilgilerini yükle
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    if (profileData) {
+        document.querySelector('input[name="fullName"]').value = profileData.fullName;
+        document.querySelector('input[name="email"]').value = profileData.email;
+        if (profileData.profileImage) {
+            document.getElementById('profileImage').src = profileData.profileImage;
+        }
+    }
+
+    // Sicil bilgilerini yükle
+    const registryData = JSON.parse(localStorage.getItem('registryData'));
+    if (registryData) {
+        document.querySelector('input[name="registryNumber"]').value = registryData.registryNumber;
+        document.querySelector('input[name="department"]').value = registryData.department;
+        document.querySelector('input[name="title"]').value = registryData.title;
+        document.querySelector('input[name="startDate"]').value = registryData.startDate;
+    }
+}
+
+// Bildirim fonksiyonunu geliştirelim
+function showNotification(message, type = 'success') {
+    const notificationDiv = document.createElement('div');
+    notificationDiv.className = `notification ${type}`;
+    notificationDiv.innerHTML = message;
+    
+    document.body.appendChild(notificationDiv);
+    
+    // 3 saniye sonra bildirimi kaldır
+    setTimeout(() => {
+        notificationDiv.remove();
+    }, 3000);
+}
+
+// Sayfa yüklendiğinde
+document.addEventListener('DOMContentLoaded', function() {
+    // Mevcut kodlar...
+    
+    // Settings sayfası açıldığında verileri yükle
+    const menuItems = document.querySelectorAll('.menu-item');
+    menuItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            if (this.getAttribute('data-page') === 'settings') {
+                setTimeout(loadSavedData, 100); // Sayfa içeriği yüklendikten sonra
+            }
+        });
+    });
+});
 
 // Sicil bilgilerini güncelleme
 function updateRegistry(event) {
