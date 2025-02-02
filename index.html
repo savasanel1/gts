@@ -378,6 +378,20 @@ const pageContents = {
                             <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
                         </div>
                         <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                     <div class="form-group">
+                            <label>Rol</label>
+                            <select name="userRole" required>
+                                ${isSuperAdmin() ? `
+                                    <option value="super_admin">Süper Admin</option>
+                                    <option value="admin">Yönetici</option>
+                                    <option value="manager">Amir</option>
+                                    <option value="user">Personel</option>
+                                ` : `
+                                    <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
+                                `}
+                            </select>
+                        </div>
+                        <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
                     </form>
                 </div>
             </div>
@@ -510,18 +524,33 @@ function updateProfile(event) {
 
 // Sayfa yüklendiğinde profil bilgilerini yükle
 function loadSavedData() {
-    // Mevcut profil bilgilerini yükle
     const profileData = JSON.parse(localStorage.getItem('profileData'));
     if (profileData) {
         // Form alanlarını doldur
         document.querySelector('input[name="fullName"]').value = profileData.fullName;
         document.querySelector('input[name="email"]').value = profileData.email;
         
-        // Sol alttaki ve sağ üstteki isimleri güncelle
+        // Rol seçim alanını kontrol et
+        const roleSelect = document.querySelector('select[name="userRole"]');
+        if (roleSelect) {
+            if (isSuperAdmin()) {
+                // Süper admin için tüm rol seçeneklerini göster
+                roleSelect.disabled = false;
+                roleSelect.value = profileData.role;
+            } else {
+                // Diğer kullanıcılar için sadece kendi rollerini göster ve değiştirmeyi engelle
+                roleSelect.innerHTML = `<option value="${profileData.role}">${formatRoleName(profileData.role)}</option>`;
+                roleSelect.disabled = true;
+            }
+        }
+        
+        // Sol alttaki ve üstteki bilgileri güncelle
         const bottomUserName = document.querySelector('.bottom-user .name');
+        const bottomUserRole = document.querySelector('.bottom-user .role');
         const topUserName = document.querySelector('.user-profile span');
         
         if (bottomUserName) bottomUserName.textContent = profileData.fullName;
+        if (bottomUserRole) bottomUserRole.textContent = formatRoleName(profileData.role);
         if (topUserName) topUserName.textContent = profileData.fullName;
     }
 
@@ -629,6 +658,11 @@ function saveUser(event) {
     document.getElementById('userTableBody').appendChild(tr);
     closeUserModal();
     form.reset();
+}
+        // Kullanıcının süper admin olup olmadığını kontrol et
+function isSuperAdmin() {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    return profileData && profileData.role === 'super_admin';
 }
 
 function getRoleName(role) {
