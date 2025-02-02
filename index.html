@@ -506,7 +506,51 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.querySelector('.menu-item[data-page="home"]').click();
 });
+// Profil fotoğrafı önizleme
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profileImage').src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
 
+// Profil bilgilerini güncelleme
+function updateProfile(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    // API çağrısı yapılacak
+    showNotification('Profil bilgileri başarıyla güncellendi');
+}
+
+// Sicil bilgilerini güncelleme
+function updateRegistry(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    // API çağrısı yapılacak
+    showNotification('Sicil bilgileri başarıyla güncellendi');
+}
+
+// Şifre değiştirme
+function updatePassword(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    if (formData.get('newPassword') !== formData.get('confirmPassword')) {
+        showNotification('Yeni şifreler eşleşmiyor', 'error');
+        return;
+    }
+    // API çağrısı yapılacak
+    showNotification('Şifreniz başarıyla güncellendi');
+    event.target.reset();
+}
+
+// Bildirim gösterme
+function showNotification(message, type = 'success') {
+    alert(message); // Şimdilik basit bir alert kullanıyoruz
+}
 window.onclick = function(event) {
     const modal = document.getElementById('userModal');
     if (event.target == modal) {
