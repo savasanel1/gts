@@ -158,20 +158,22 @@
     </div>
 
     <!-- Task Detail Modal -->
-    <div id="taskDetailModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeTaskDetailModal()">&times;</span>
-            <div class="task-detail-header">
-                <h2 id="taskDetailTitle">Görev Detayı</h2>
-                <div class="task-status-wrapper">
-                    <select id="taskStatusSelect" onchange="updateTaskStatus(this.value)">
-                        <option value="pending">Beklemede</option>
-                        <option value="in-progress">Devam Ediyor</option>
-                        <option value="completed">Tamamlandı</option>
-                    </select>
-                </div>
+<div id="taskDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTaskDetailModal()">&times;</span>
+        <div class="task-detail-header">
+            <h2 id="taskDetailTitle"></h2>
+            <div class="task-actions">
+                <select id="taskStatusSelect" onchange="updateTaskStatus(this.value)">
+                    <option value="pending">Beklemede</option>
+                    <option value="in-progress">Devam Ediyor</option>
+                    <option value="completed">Tamamlandı</option>
+                </select>
+                <div class="priority-indicator" id="taskPriorityBadge"></div>
             </div>
-            <div class="task-detail-content">
+        </div>
+        <div class="task-detail-content">
+            <div class="detail-section">
                 <div class="detail-group">
                     <label>Açıklama</label>
                     <p id="taskDetailDescription"></p>
@@ -188,27 +190,34 @@
                 </div>
                 <div class="detail-row">
                     <div class="detail-group">
-                        <label>Öncelik</label>
-                        <p id="taskDetailPriority"></p>
-                    </div>
-                    <div class="detail-group">
-                        <label>Puan</label>
+                        <label>Görev Puanı</label>
                         <p id="taskDetailPoints"></p>
                     </div>
-                </div>
-                <div class="task-comments">
-                    <h3>Yorumlar</h3>
-                    <div class="comments-list" id="taskComments">
-                        <!-- Yorumlar buraya gelecek -->
+                    <div class="detail-group">
+                        <label>İlerleme</label>
+                        <div class="progress-bar">
+                            <div class="progress" id="taskProgress"></div>
+                        </div>
                     </div>
-                    <form id="commentForm" onsubmit="addComment(event)">
-                        <textarea name="comment" placeholder="Yorumunuzu yazın..." required></textarea>
-                        <button type="submit" class="save-btn">Yorum Ekle</button>
-                    </form>
                 </div>
+            </div>
+            <div class="task-timeline">
+                <h3>Görev Geçmişi</h3>
+                <div class="timeline" id="taskTimeline">
+                    <!-- Görev geçmişi buraya gelecek -->
+                </div>
+            </div>
+            <div class="task-comments">
+                <h3>Yorumlar</h3>
+                <div class="comments-list" id="taskComments"></div>
+                <form id="commentForm" onsubmit="addComment(event)">
+                    <textarea name="comment" placeholder="Yorumunuzu yazın..." required></textarea>
+                    <button type="submit" class="save-btn">Yorum Ekle</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
     <script>
 // Varsayılan süper admin kullanıcısını oluştur (eğer yoksa)
 if (!localStorage.getItem('profileData')) {
