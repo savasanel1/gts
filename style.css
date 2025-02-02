@@ -144,7 +144,10 @@ body {
 }
 /* Dashboard Kartları */
 .dashboard-content {
+    background: white;
     padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .dashboard-cards {
@@ -155,13 +158,18 @@ body {
 }
 
 .card {
-    background: white;
+    background: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     display: flex;
     align-items: center;
     gap: 15px;
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
 }
 
 .card-icon {
@@ -193,10 +201,7 @@ body {
 
 /* Görev Listesi */
 .recent-tasks {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 20px;
 }
 
 .section-header {
@@ -216,6 +221,7 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: background-color 0.3s;
 }
 
 .new-task-btn:hover {
@@ -229,12 +235,19 @@ body {
 }
 
 .task-item {
+    background: #f8f9fa;
     padding: 15px;
-    border: 1px solid #eee;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .task-info h4 {
@@ -302,6 +315,11 @@ body {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.add-user-btn:hover {
+    background: #0b5ed7;
 }
 
 .users-table {
@@ -319,6 +337,10 @@ body {
 .users-table th {
     background: #f8f9fa;
     font-weight: 600;
+}
+
+.users-table tr:hover {
+    background: #f8f9fa;
 }
 
 .role-badge {
@@ -361,6 +383,11 @@ body {
     border: none;
     cursor: pointer;
     margin-right: 5px;
+    transition: opacity 0.3s;
+}
+
+.action-btn:hover {
+    opacity: 0.8;
 }
 
 .edit-btn {
@@ -402,6 +429,12 @@ body {
     top: 10px;
     font-size: 28px;
     cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #333;
 }
 
 .form-group {
@@ -422,6 +455,14 @@ body {
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #0d6efd;
+    outline: none;
 }
 
 .form-group textarea {
@@ -499,6 +540,11 @@ body {
     justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+.image-upload:hover {
+    background: #0b5ed7;
 }
 
 .image-upload i {
@@ -558,6 +604,43 @@ body {
         transform: translateX(0);
         opacity: 1;
     }
+}
+
+/* Görev Detay Modal */
+.task-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.task-status-wrapper select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.task-detail-content {
+    margin-top: 20px;
+}
+
+.detail-group {
+    margin-bottom: 15px;
+}
+
+.detail-group label {
+    display: block;
+    font-weight: 600;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 15px;
 }
 
 /* Responsive Tasarım */
@@ -643,91 +726,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-/* Görev Detay Modal Stilleri */
-.task-detail-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.task-status-wrapper select {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    font-size: 14px;
-}
-
-.task-detail-content {
-    margin-top: 20px;
-}
-
-.detail-group {
-    margin-bottom: 15px;
-}
-
-.detail-group label {
-    display: block;
-    font-weight: 600;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.detail-group p {
-    margin: 0;
-    color: #333;
-}
-
-.detail-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 15px;
-}
-
-.task-comments {
-    margin-top: 30px;
-    border-top: 1px solid #eee;
-    padding-top: 20px;
-}
-
-.task-comments h3 {
-    margin-bottom: 15px;
-}
-
-.comments-list {
-    margin-bottom: 20px;
-}
-
-.comment-item {
-    background: #f8f9fa;
-    padding: 15px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-.comment-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-.comment-author {
-    font-weight: 600;
-}
-
-.comment-date {
-    font-size: 12px;
-    color: #666;
-}
-
-#commentForm textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    resize: vertical;
-    min-height: 80px;
 }
