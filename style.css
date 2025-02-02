@@ -280,7 +280,6 @@ body {
     background: #d4edda;
     color: #155724;
 }
-
 /* Kullanıcı Yönetimi */
 .user-management-container {
     background: white;
@@ -304,7 +303,7 @@ body {
     align-items: center;
     gap: 5px;
 }
-/* Tablo Stilleri */
+
 .users-table {
     width: 100%;
     border-collapse: collapse;
@@ -374,7 +373,7 @@ body {
     color: white;
 }
 
-/* Modal Stilleri */
+/* Modal Stiller */
 .modal {
     display: none;
     position: fixed;
@@ -429,7 +428,6 @@ body {
     resize: vertical;
     min-height: 100px;
 }
-
 /* Ayarlar Sayfası */
 .settings-container {
     padding: 20px;
@@ -465,6 +463,7 @@ body {
 .settings-content {
     padding: 20px;
 }
+
 /* Profil Resmi ve Yükleme */
 .profile-image-section {
     text-align: center;
@@ -559,28 +558,6 @@ body {
         transform: translateX(0);
         opacity: 1;
     }
-}
-
-/* Görev Öncelik Rozetleri */
-.priority-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-}
-
-.priority-high {
-    background: #dc3545;
-    color: white;
-}
-
-.priority-medium {
-    background: #ffc107;
-    color: black;
-}
-
-.priority-low {
-    background: #28a745;
-    color: white;
 }
 
 /* Responsive Tasarım */
