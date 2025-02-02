@@ -505,10 +505,23 @@ function updateProfile(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     
-    const profileData = {
+    // Mevcut profil bilgilerini al
+    const currentProfile = JSON.parse(localStorage.getItem('profileData'));
+    
+   const profileData = {
         fullName: formData.get('fullName'),
-        email: formData.get('email')
+        email: formData.get('email'),
+        role: isSuperAdmin() ? formData.get('userRole') : (currentProfile?.role || 'user')
     };
+    
+    localStorage.setItem('profileData', JSON.stringify(profileData));
+    
+    document.querySelector('.bottom-user .name').textContent = profileData.fullName;
+    document.querySelector('.bottom-user .role').textContent = formatRoleName(profileData.role);
+    document.querySelector('.user-profile span').textContent = profileData.fullName;
+    
+    showNotification('Profil bilgileri başarıyla güncellendi', 'success');
+}
     
     // Profil bilgilerini localStorage'a kaydet
     localStorage.setItem('profileData', JSON.stringify(profileData));
