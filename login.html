@@ -3,128 +3,750 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AYBÜ Görev Takip - Giriş</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .login-container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            width: 400px;
-        }
-
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .login-header i {
-            font-size: 40px;
-            color: #003366;
-            margin-bottom: 10px;
-        }
-
-        .login-header h1 {
-            color: #003366;
-            font-size: 24px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #666;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: #003366;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .login-btn:hover {
-            background: #002855;
-        }
-
-        .forgot-password {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .forgot-password a {
-            color: #003366;
-            text-decoration: none;
-            font-size: 14px;
-        }
-    </style>
+    <title>AYBÜ Görev Takip</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <i class="fas fa-university"></i>
-            <h1>AYBÜ Görev Takip</h1>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-university" style="font-size: 30px;"></i>
+            <h2>AYBÜ Görev Takip</h2>
         </div>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="username">Kullanıcı Adı</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Şifre</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" class="login-btn">Giriş Yap</button>
-        </form>
-        <div class="forgot-password">
-            <a href="#">Şifremi Unuttum</a>
+        <div class="menu-items">
+            <a href="#" class="menu-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                Ana Sayfa
+            </a>
+            <a href="#" class="menu-item" data-page="users">
+                <i class="fas fa-users-cog"></i>
+                Kullanıcı Yönetimi
+            </a>
+            <a href="#" class="menu-item" data-page="tasks">
+                <i class="fas fa-tasks"></i>
+                Görevlerim
+            </a>
+            <a href="#" class="menu-item" data-page="team">
+                <i class="fas fa-users"></i>
+                Ekibim
+            </a>
+            <a href="#" class="menu-item" data-page="reports">
+                <i class="fas fa-chart-bar"></i>
+                Raporlar
+            </a>
+            <a href="#" class="menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+        </div>
+        <div class="bottom-user">
+            <div class="name">Ahmet Yılmaz</div>
+            <div class="role">Yönetici</div>
         </div>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Örnek kullanıcı kontrolü
-            if(username === 'admin' && password === 'admin123') {
-                window.location.href = 'index.html';
-            } else {
-                alert('Kullanıcı adı veya şifre hatalı!');
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h2 id="pageTitle">Ana Sayfa</h2>
+            <div class="search-box">
+                <input type="text" placeholder="Ara...">
+            </div>
+            <div class="user-section">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <span>Ahmet Yılmaz</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+        <!-- Dynamic Content Area -->
+        <div id="contentArea">
+            <!-- Burası dinamik olarak değişecek -->
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeUserModal()">&times;</span>
+            <h2>Yeni Kullanıcı Ekle</h2>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label>Ad Soyad</label>
+                    <input type="text" name="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>E-posta</label>
+                    <input type="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre</label>
+                    <input type="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol</label>
+                    <select name="role" required>
+                        <option value="super_admin">Süper Admin</option>
+                        <option value="admin">Yönetici</option>
+                        <option value="manager">Amir</option>
+                        <option value="user">Personel</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Durum</label>
+                    <select name="status" required>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Pasif</option>
+                    </select>
+                </div>
+                <button type="submit" class="save-btn">Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Yeni Görev Ekle</h2>
+            <form id="taskForm" onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label>Görev Başlığı</label>
+                    <input type="text" name="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>Görev Açıklaması</label>
+                    <textarea name="taskDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Atanacak Kişi</label>
+                    <select name="assignee" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="1">Ahmet Yılmaz</option>
+                        <option value="2">Mehmet Demir</option>
+                        <option value="3">Ayşe Kaya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Son Tarih</label>
+                    <input type="date" name="dueDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Öncelik</label>
+                    <select name="priority" required>
+                        <option value="low">Düşük</option>
+                        <option value="medium">Orta</option>
+                        <option value="high">Yüksek</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Görev Puanı</label>
+                    <input type="number" name="taskPoints" min="1" max="100" required>
+                </div>
+                <button type="submit" class="save-btn">Görevi Kaydet</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Detail Modal -->
+    <div id="taskDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskDetailModal()">&times;</span>
+            <div class="task-detail-header">
+                <h2 id="taskDetailTitle"></h2>
+                <div class="task-actions">
+                    <select id="taskStatusSelect" onchange="updateTaskStatus(this.value)">
+                        <option value="pending">Beklemede</option>
+                        <option value="in-progress">Devam Ediyor</option>
+                        <option value="completed">Tamamlandı</option>
+                    </select>
+                    <div class="priority-indicator" id="taskPriorityBadge"></div>
+                </div>
+            </div>
+            <div class="task-detail-content">
+                <div class="detail-section">
+                    <div class="detail-group">
+                        <label>Açıklama</label>
+                        <p id="taskDetailDescription"></p>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-group">
+                            <label>Atanan Kişi</label>
+                            <p id="taskDetailAssignee"></p>
+                        </div>
+                        <div class="detail-group">
+                            <label>Son Tarih</label>
+                            <p id="taskDetailDueDate"></p>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-group">
+                            <label>Görev Puanı</label>
+                            <p id="taskDetailPoints"></p>
+                        </div>
+                        <div class="detail-group">
+                            <label>İlerleme</label>
+                            <div class="progress-bar">
+                                <div class="progress" id="taskProgress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="task-timeline">
+                    <h3>Görev Geçmişi</h3>
+                    <div class="timeline" id="taskTimeline">
+                        <!-- Görev geçmişi buraya gelecek -->
+                    </div>
+                </div>
+                <div class="task-comments">
+                    <h3>Yorumlar</h3>
+                    <div class="comments-list" id="taskComments"></div>
+                    <form id="commentForm" onsubmit="addComment(event)">
+                        <textarea name="comment" placeholder="Yorumunuzu yazın..." required></textarea>
+                        <button type="submit" class="save-btn">Yorum Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+// Varsayılan süper admin kullanıcısını oluştur (eğer yoksa)
+if (!localStorage.getItem('profileData')) {
+    const defaultProfile = {
+        fullName: 'Ahmet Yılmaz',
+        email: 'ahmet@aybu.edu.tr',
+        role: 'super_admin'
+    };
+    localStorage.setItem('profileData', JSON.stringify(defaultProfile));
+}
+
+// Kullanıcının süper admin olup olmadığını kontrol et
+function isSuperAdmin() {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    return profileData && profileData.role === 'super_admin';
+}
+
+// Rol adını formatla
+function formatRoleName(role) {
+    const roles = {
+        super_admin: 'Süper Admin',
+        admin: 'Yönetici',
+        manager: 'Amir',
+        user: 'Personel'
+    };
+    return roles[role] || role;
+}
+
+const pageContents = {
+    home: `
+        <div class="dashboard-content">
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Aktif Görevler</h3>
+                        <p class="number">12</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Tamamlanan Görevler</h3>
+                        <p class="number">85</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="number">7</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Performans Puanı</h3>
+                        <p class="number">92</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-tasks">
+                <div class="section-header">
+                    <h2>Son Görevler</h2>
+                    <button class="new-task-btn" onclick="openTaskModal()">
+                        <i class="fas fa-plus"></i> Yeni Görev
+                    </button>
+                </div>
+                <div class="task-list">
+                    <div class="task-item" onclick="showTaskDetail(1)">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item" onclick="showTaskDetail(2)">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+    users: `
+        <div class="user-management-container">
+            <div class="user-actions">
+                <button class="add-user-btn" onclick="openUserModal()">
+                    <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
+                </button>
+            </div>
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>Kullanıcı Adı</th>
+                        <th>E-posta</th>
+                        <th>Rol</th>
+                        <th>Durum</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr>
+                        <td>Ahmet Yılmaz</td>
+                        <td>ahmet.yilmaz</td>
+                        <td>ahmet@aybu.edu.tr</td>
+                        <td><span class="role-badge role-super-admin">Süper Admin</span></td>
+                        <td><span class="status-active">Aktif</span></td>
+                        <td>
+                            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `,
+    tasks: `
+        <div class="dashboard-content">
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Aktif Görevler</h3>
+                        <p class="number">12</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Tamamlanan Görevler</h3>
+                        <p class="number">85</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Bekleyen Görevler</h3>
+                        <p class="number">7</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Performans Puanı</h3>
+                        <p class="number">92</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-tasks">
+                <div class="section-header">
+                    <h2>Görevlerim</h2>
+                    <button class="new-task-btn" onclick="openTaskModal()">
+                        <i class="fas fa-plus"></i> Yeni Görev
+                    </button>
+                </div>
+                <div class="task-list">
+                    <div class="task-item" onclick="showTaskDetail(1)">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item" onclick="showTaskDetail(2)">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+    team: `
+        <div class="team-container">
+            <h2>Ekip Üyeleri</h2>
+            <div class="team-list">
+                <!-- Ekip listesi içeriği -->
+            </div>
+        </div>
+    `,
+    reports: `
+        <div class="reports-container">
+            <h2>Raporlar</h2>
+            <div class="reports-content">
+                <!-- Raporlar içeriği -->
+            </div>
+        </div>
+    `,
+    settings: `
+        <div class="settings-container">
+            <div class="settings-grid">
+                <!-- Profil Bilgileri Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-user"></i> Profil Bilgileri</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="profileForm" onsubmit="updateProfile(event)">
+                            <div class="profile-image-section">
+                                <div class="profile-image">
+                                    <img src="default-avatar.png" id="profileImage" alt="Profil Fotoğrafı">
+                                    <div class="image-upload">
+                                        <label for="imageInput">
+                                            <i class="fas fa-camera"></i>
+                                        </label>
+                                        <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Ad Soyad</label>
+                                <input type="text" name="fullName" value="Ahmet Yılmaz" required>
+                            </div>
+                            <div class="form-group">
+                                <label>E-posta</label>
+                                <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rol</label>
+                                <select name="userRole" required ${!isSuperAdmin() ? 'disabled' : ''}>
+                                    ${isSuperAdmin() ? `
+                                        <option value="super_admin">Süper Admin</option>
+                                        <option value="admin">Yönetici</option>
+                                        <option value="manager">Amir</option>
+                                        <option value="user">Personel</option>
+                                    ` : `
+                                        <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
+                                    `}
+                                </select>
+                            </div>
+                            <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Sicil Bilgileri Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-id-card"></i> Sicil Bilgileri</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="registryForm" onsubmit="updateRegistry(event)">
+                            <div class="form-group">
+                                <label>Sicil Numarası</label>
+                                <input type="text" name="registryNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Birim</label>
+                                <input type="text" name="department" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Ünvan</label>
+                                <input type="text" name="title" required>
+                            </div>
+                            <div class="form-group">
+                                <label>İşe Başlama Tarihi</label>
+                                <input type="date" name="startDate" required>
+                            </div>
+                            <button type="submit" class="save-btn">Bilgileri Güncelle</button>
+                        </form>
+                    </div>
+                </div>
+                <!-- Şifre Değiştirme Bölümü -->
+                <div class="settings-card">
+                    <div class="settings-header">
+                        <h3><i class="fas fa-lock"></i> Şifre Değiştirme</h3>
+                    </div>
+                    <div class="settings-content">
+                        <form id="passwordForm" onsubmit="updatePassword(event)">
+                            <div class="form-group">
+                                <label>Mevcut Şifre</label>
+                                <input type="password" name="currentPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Yeni Şifre</label>
+                                <input type="password" name="newPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Yeni Şifre (Tekrar)</label>
+                                <input type="password" name="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="save-btn">Şifreyi Değiştir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+};
+
+// Görev işlemleri için fonksiyonlar
+let currentTaskId = null;
+
+function openTaskModal() {
+    document.getElementById('taskModal').style.display = 'block';
+}
+
+function closeTaskModal() {
+    document.getElementById('taskModal').style.display = 'none';
+}
+
+function closeTaskDetailModal() {
+    document.getElementById('taskDetailModal').style.display = 'none';
+    currentTaskId = null;
+}
+
+function saveTask(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const task = {
+        id: Date.now(),
+        title: formData.get('taskTitle'),
+        description: formData.get('taskDescription'),
+        assignee: formData.get('assignee'),
+        dueDate: formData.get('dueDate'),
+        priority: formData.get('priority'),
+        points: formData.get('taskPoints'),
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+
+    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    tasks.push(task);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    updateTaskList();
+    closeTaskModal();
+    event.target.reset();
+    showNotification('Görev başarıyla eklendi', 'success');
+}
+
+function showTaskDetail(taskId) {
+    currentTaskId = taskId;
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const task = tasks.find(t => t.id === taskId) || {
+        id: taskId,
+        title: 'Rapor Hazırlama',
+        description: 'Aylık faaliyet raporunun hazırlanması',
+        assignee: '1',
+        dueDate: '2023-12-25',
+        priority: 'medium',
+        points: 10,
+        status: 'pending',
+        progress: 30,
+        timeline: [
+            {
+                date: '2023-12-01',
+                action: 'Görev oluşturuldu',
+                user: 'Ahmet Yılmaz'
             }
+        ],
+        comments: []
+    };
+
+    document.getElementById('taskDetailTitle').textContent = task.title;
+    document.getElementById('taskDetailDescription').textContent = task.description;
+    document.getElementById('taskDetailAssignee').textContent = getAssigneeName(task.assignee);
+    document.getElementById('taskDetailDueDate').textContent = formatDate(task.dueDate);
+    document.getElementById('taskDetailPoints').textContent = `${task.points} Puan`;
+    document.getElementById('taskStatusSelect').value = task.status;
+    
+    const progressBar = document.getElementById('taskProgress');
+    if (progressBar) {
+        progressBar.style.width = `${task.progress || 0}%`;
+    }
+
+    const priorityBadge = document.getElementById('taskPriorityBadge');
+    if (priorityBadge) {
+        priorityBadge.className = `priority-indicator priority-${task.priority}`;
+        priorityBadge.textContent = formatPriority(task.priority);
+    }
+
+    updateTaskTimeline(task.timeline || []);
+    loadComments(task.comments || []);
+    document.getElementById('taskDetailModal').style.display = 'block';
+}
+
+function updateTaskTimeline(timeline) {
+    const timelineContainer = document.getElementById('taskTimeline');
+    if (!timelineContainer) return;
+
+    timelineContainer.innerHTML = timeline.map(item => `
+        <div class="timeline-item">
+            <div class="timeline-date">${formatDate(item.date)}</div>
+            <div class="timeline-content">
+                <strong>${item.user}</strong> ${item.action}
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadComments(comments) {
+    const commentsContainer = document.getElementById('taskComments');
+    if (!commentsContainer) return;
+
+    if (comments.length === 0) {
+        commentsContainer.innerHTML = '<p class="no-comments">Henüz yorum yapılmamış.</p>';
+        return;
+    }
+
+    commentsContainer.innerHTML = comments.map(comment => `
+        <div class="comment-item">
+            <div class="comment-header">
+                <span class="comment-author">${comment.author}</span>
+                <span class="comment-date">${formatDate(comment.date)}</span>
+            </div>
+            <div class="comment-content">${comment.text}</div>
+        </div>
+    `).join('');
+}
+
+function addComment(event) {
+    event.preventDefault();
+    if (!currentTaskId) return;
+
+    const commentText = event.target.comment.value;
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+
+    if (taskIndex === -1) {
+        tasks.push({
+            id: currentTaskId,
+            comments: []
         });
-    </script>
-</body>
-</html>
+    }
+
+    const task = tasks[taskIndex] || tasks[tasks.length - 1];
+    if (!task.comments) {
+        task.comments = [];
+    }
+
+    const comment = {
+        id: Date.now(),
+        text: commentText,
+        author: JSON.parse(localStorage.getItem('profileData'))?.fullName || 'Anonim',
+        date: new Date().toISOString()
+    };
+
+    task.comments.push(comment);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    loadComments(task.comments);
+    event.target.reset();
+    showNotification('Yorum başarıyla eklendi', 'success');
+}
+
+function updateTaskStatus(newStatus) {
+    if (!currentTaskId) return;
+
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const taskIndex = tasks.findIndex(t => t.id === currentTaskId);
+
+    if (taskIndex === -1) {
+        tasks.push({
+            id: currentTaskId,
+            status: newStatus,
+            timeline: []
+        });
+    }
+
+    const task = tasks[taskIndex] || tasks[tasks.length - 1];
+    const oldStatus = task.status;
+    task.status = newStatus;
+
+    if (!task.timeline) {
+        task.timeline = [];
+    }
+
+    task.timeline.push({
+        date: new Date().toISOString(),
+        action: `Görev durumu "${formatStatus(oldStatus)}" durumundan "${formatStatus(newStatus)}" durumuna güncellendi`,
+        user: JSON.parse(localStorage.getItem('profileData'))?.fullName || 'Anonim'
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    updateTaskTimeline(task.timeline);
+    showNotification('Görev durumu güncellendi', 'success');
+}
+
+// Profil işlemleri için fonksiyonlar
+function previewImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const profileImage = document.getElementById('profileImage');
+            profileImage.src = e.target.result;
+            localStorage.setItem('profileImage', e.target.result);
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function updateProfile(event) {
+    event.preventDefault();
