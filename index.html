@@ -421,14 +421,23 @@ function updateRegistry(event) {
     showNotification('Sicil bilgileri başarıyla güncellendi');
 }
 
-// Şifre değiştirme
+// Varsayılan şifreyi tanımlayalım (gerçek uygulamada bu API'dan gelecek)
+const DEFAULT_PASSWORD = "123456"; // Örnek şifre
+
 function updatePassword(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const currentPassword = formData.get('currentPassword');
     const newPassword = formData.get('newPassword');
     const confirmPassword = formData.get('confirmPassword');
 
-    // Şifre kontrolü
+    // Mevcut şifre kontrolü
+    if (currentPassword !== DEFAULT_PASSWORD) {
+        showNotification('Mevcut şifre yanlış!', 'error');
+        return false;
+    }
+
+    // Yeni şifre kontrolü
     if (newPassword !== confirmPassword) {
         showNotification('Yeni şifreler eşleşmiyor!', 'error');
         return false;
@@ -440,8 +449,10 @@ function updatePassword(event) {
     }
 
     // Şifre başarıyla değiştirildi
+    localStorage.setItem('userPassword', newPassword);
     showNotification('Şifreniz başarıyla güncellendi', 'success');
     event.target.reset();
+}
     
     // Şifreyi localStorage'a kaydedelim
     localStorage.setItem('userPassword', newPassword);
