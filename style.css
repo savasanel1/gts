@@ -600,3 +600,7 @@ body {
         opacity: 1;
     }
 }
+#contentArea {
+    padding: 20px;
+    min-height: calc(100vh - 60px); /* Top bar yüksekliğini çıkar */
+}
