@@ -627,7 +627,58 @@ window.onclick = function(event) {
     if (event.target.classList.contains('modal')) {
         event.target.style.display = 'none';
     }
+    // Görev filtreleme ve arama
+function filterTasks() {
+    const statusFilter = document.getElementById('taskStatusFilter').value;
+    const priorityFilter = document.getElementById('taskPriorityFilter').value;
+    const searchText = document.getElementById('taskSearch').value.toLowerCase();
+    
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const filteredTasks = tasks.filter(task => {
+        const matchesStatus = statusFilter === 'all' || task.status === statusFilter;
+        const matchesPriority = priorityFilter === 'all' || task.priority === priorityFilter;
+        const matchesSearch = task.title.toLowerCase().includes(searchText) || 
+                            task.description.toLowerCase().includes(searchText);
+        
+        return matchesStatus && matchesPriority && matchesSearch;
+    });
+    
+    updateTaskList(filteredTasks);
 }
+
+// Görev listesini güncelle
+function updateTaskList(tasks = []) {
+    const taskList = document.getElementById('taskList');
+    if (!taskList) return;
+    
+    taskList.innerHTML = tasks.map(task => `
+        <div class="task-item" onclick="showTaskDetail(${task.id})">
+            <div class="task-priority priority-${task.priority}"></div>
+            <div class="task-info">
+                <h4>${task.title}</h4>
+                <p>${task.description}</p>
+                <div class="task-progress">
+                    <div class="progress-bar" style="width: ${task.progress || 0}%"></div>
+                </div>
+            </div>
+            <div class="task-meta">
+                <span class="deadline">Son Tarih: ${formatDate(task.dueDate)}</span>
+                <span class="status ${task.status}">${formatStatus(task.status)}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Sayfa yüklendiğinde görevleri yükle
+document.addEventListener('DOMContentLoaded', function() {
+    // ... mevcut kodlar ...
+    
+    // Görevler sayfası açıldığında
+    if (page === 'tasks') {
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        updateTaskList(tasks);
+    }
+});
 </script>
 </body>
 </html>
