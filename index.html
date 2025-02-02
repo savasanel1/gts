@@ -305,13 +305,93 @@ const pageContents = {
         </div>
     `,
     settings: `
-        <div class="settings-container">
-            <h2>Ayarlar</h2>
-            <div class="settings-content">
-                <!-- Ayarlar içeriği -->
+    <div class="settings-container">
+        <div class="settings-grid">
+            <!-- Profil Bilgileri Bölümü -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <h3><i class="fas fa-user"></i> Profil Bilgileri</h3>
+                </div>
+                <div class="settings-content">
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="profile-image-section">
+                            <div class="profile-image">
+                                <img src="default-avatar.png" id="profileImage" alt="Profil Fotoğrafı">
+                                <div class="image-upload">
+                                    <label for="imageInput">
+                                        <i class="fas fa-camera"></i>
+                                    </label>
+                                    <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Ad Soyad</label>
+                            <input type="text" name="fullName" value="Ahmet Yılmaz" required>
+                        </div>
+                        <div class="form-group">
+                            <label>E-posta</label>
+                            <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
+                        </div>
+                        <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Sicil Bilgileri Bölümü -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <h3><i class="fas fa-id-card"></i> Sicil Bilgileri</h3>
+                </div>
+                <div class="settings-content">
+                    <form id="registryForm" onsubmit="updateRegistry(event)">
+                        <div class="form-group">
+                            <label>Sicil Numarası</label>
+                            <input type="text" name="registryNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Birim</label>
+                            <input type="text" name="department" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ünvan</label>
+                            <input type="text" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>İşe Başlama Tarihi</label>
+                            <input type="date" name="startDate" required>
+                        </div>
+                        <button type="submit" class="save-btn">Bilgileri Güncelle</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Şifre Değiştirme Bölümü -->
+            <div class="settings-card">
+                <div class="settings-header">
+                    <h3><i class="fas fa-lock"></i> Şifre Değiştirme</h3>
+                </div>
+                <div class="settings-content">
+                    <form id="passwordForm" onsubmit="updatePassword(event)">
+                        <div class="form-group">
+                            <label>Mevcut Şifre</label>
+                            <input type="password" name="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Yeni Şifre</label>
+                            <input type="password" name="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Yeni Şifre (Tekrar)</label>
+                            <input type="password" name="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="save-btn">Şifreyi Değiştir</button>
+                    </form>
+                </div>
             </div>
         </div>
-    `
+    </div>
+`
 };
 
 function openUserModal() {
