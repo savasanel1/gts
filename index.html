@@ -267,26 +267,6 @@ const pageContents = {
     `,
     tasks: `
         <div class="dashboard-content">
-            <div class="task-filters">
-                <div class="filter-group">
-                    <select id="taskStatusFilter" onchange="filterTasks()">
-                        <option value="all">Tüm Görevler</option>
-                        <option value="pending">Bekleyen</option>
-                        <option value="in-progress">Devam Eden</option>
-                        <option value="completed">Tamamlanan</option>
-                    </select>
-                    <select id="taskPriorityFilter" onchange="filterTasks()">
-                        <option value="all">Tüm Öncelikler</option>
-                        <option value="high">Yüksek</option>
-                        <option value="medium">Orta</option>
-                        <option value="low">Düşük</option>
-                    </select>
-                </div>
-                <div class="search-group">
-                    <input type="text" id="taskSearch" placeholder="Görev ara..." onkeyup="filterTasks()">
-                    <i class="fas fa-search"></i>
-                </div>
-            </div>
             <div class="dashboard-cards">
                 <div class="card">
                     <div class="card-icon">
@@ -332,8 +312,27 @@ const pageContents = {
                         <i class="fas fa-plus"></i> Yeni Görev
                     </button>
                 </div>
-                <div class="task-list" id="taskList">
-                    <!-- Görevler dinamik olarak buraya eklenecek -->
+                <div class="task-list">
+                    <div class="task-item" onclick="showTaskDetail(1)">
+                        <div class="task-info">
+                            <h4>Rapor Hazırlama</h4>
+                            <p>Aylık faaliyet raporunun hazırlanması</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 25.12.2023</span>
+                            <span class="status pending">Beklemede</span>
+                        </div>
+                    </div>
+                    <div class="task-item" onclick="showTaskDetail(2)">
+                        <div class="task-info">
+                            <h4>Toplantı Organizasyonu</h4>
+                            <p>Departman toplantısının organize edilmesi</p>
+                        </div>
+                        <div class="task-meta">
+                            <span class="deadline">Son Tarih: 20.12.2023</span>
+                            <span class="status in-progress">Devam Ediyor</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -382,6 +381,19 @@ const pageContents = {
                             <div class="form-group">
                                 <label>E-posta</label>
                                 <input type="email" name="email" value="ahmet@aybu.edu.tr" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Rol</label>
+                                <select name="userRole" required ${!isSuperAdmin() ? 'disabled' : ''}>
+                                    ${isSuperAdmin() ? `
+                                        <option value="super_admin">Süper Admin</option>
+                                        <option value="admin">Yönetici</option>
+                                        <option value="manager">Amir</option>
+                                        <option value="user">Personel</option>
+                                    ` : `
+                                        <option value="${JSON.parse(localStorage.getItem('profileData'))?.role || 'user'}">${formatRoleName(JSON.parse(localStorage.getItem('profileData'))?.role || 'user')}</option>
+                                    `}
+                                </select>
                             </div>
                             <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
                         </form>
@@ -441,7 +453,23 @@ const pageContents = {
         </div>
     `
 };
-        // Temel fonksiyonlar
+
+// Temel fonksiyonları tanımla
+function isSuperAdmin() {
+    const profileData = JSON.parse(localStorage.getItem('profileData'));
+    return profileData && profileData.role === 'super_admin';
+}
+
+function formatRoleName(role) {
+    const roles = {
+        super_admin: 'Süper Admin',
+        admin: 'Yönetici',
+        manager: 'Amir',
+        user: 'Personel'
+    };
+    return roles[role] || role;
+}
+        // Modal işlemleri
 function openTaskModal() {
     document.getElementById('taskModal').style.display = 'block';
 }
@@ -470,8 +498,8 @@ function saveUser(event) {
         <td><span class="role-badge role-${formData.get('role')}">${formatRoleName(formData.get('role'))}</span></td>
         <td><span class="status-${formData.get('status')}">${formData.get('status') === 'active' ? 'Aktif' : 'Pasif'}</span></td>
         <td>
-            <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
-            <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+            <button class="action-btn edit-btn" onclick="editUser(this)"><i class="fas fa-edit"></i></button>
+            <button class="action-btn delete-btn" onclick="deleteUser(this)"><i class="fas fa-trash"></i></button>
         </td>
     `;
     document.getElementById('userTableBody').appendChild(tr);
@@ -504,52 +532,41 @@ function previewImage(event) {
 function updateProfile(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
+    
     const profileData = {
         fullName: formData.get('fullName'),
-        email: formData.get('email')
+        email: formData.get('email'),
+        role: formData.get('userRole') || JSON.parse(localStorage.getItem('profileData'))?.role || 'user'
     };
+    
     localStorage.setItem('profileData', JSON.stringify(profileData));
-    showNotification('Profil bilgileri güncellendi', 'success');
+    
+    document.querySelector('.bottom-user .name').textContent = profileData.fullName;
+    document.querySelector('.bottom-user .role').textContent = formatRoleName(profileData.role);
+    document.querySelector('.user-profile span').textContent = profileData.fullName;
+    
+    showNotification('Profil bilgileri başarıyla güncellendi', 'success');
 }
 
 function updateRegistry(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     localStorage.setItem('registryData', JSON.stringify(Object.fromEntries(formData)));
-    showNotification('Sicil bilgileri güncellendi', 'success');
+    showNotification('Sicil bilgileri başarıyla güncellendi', 'success');
 }
 
 function updatePassword(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     if (formData.get('newPassword') !== formData.get('confirmPassword')) {
-        showNotification('Şifreler eşleşmiyor', 'error');
+        showNotification('Yeni şifreler eşleşmiyor', 'error');
         return;
     }
     event.target.reset();
-    showNotification('Şifre güncellendi', 'success');
-}
-
-// Görev filtreleme
-function filterTasks() {
-    const statusFilter = document.getElementById('taskStatusFilter').value;
-    const priorityFilter = document.getElementById('taskPriorityFilter').value;
-    const searchText = document.getElementById('taskSearch').value.toLowerCase();
-    
-    // Filtreleme işlemleri burada yapılacak
+    showNotification('Şifre başarıyla güncellendi', 'success');
 }
 
 // Yardımcı fonksiyonlar
-function formatRoleName(role) {
-    const roles = {
-        super_admin: 'Süper Admin',
-        admin: 'Yönetici',
-        manager: 'Amir',
-        user: 'Personel'
-    };
-    return roles[role] || role;
-}
-
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -560,18 +577,44 @@ function showNotification(message, type = 'success') {
 
 // Sayfa yükleme ve navigasyon
 document.addEventListener('DOMContentLoaded', function() {
+    // Menü işlemleri
     const menuItems = document.querySelectorAll('.menu-item');
     menuItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
+            // Aktif menü öğesini güncelle
             menuItems.forEach(i => i.classList.remove('active'));
             this.classList.add('active');
             
+            // Sayfa başlığını güncelle
             const pageTitle = this.textContent.trim();
             document.getElementById('pageTitle').textContent = pageTitle;
             
+            // Sayfa içeriğini güncelle
             const page = this.getAttribute('data-page');
             document.getElementById('contentArea').innerHTML = pageContents[page] || '';
+            
+            // Ayarlar sayfası için ek işlemler
+            if (page === 'settings') {
+                const profileData = JSON.parse(localStorage.getItem('profileData'));
+                if (profileData) {
+                    document.querySelector('input[name="fullName"]').value = profileData.fullName;
+                    document.querySelector('input[name="email"]').value = profileData.email;
+                }
+                
+                const registryData = JSON.parse(localStorage.getItem('registryData'));
+                if (registryData) {
+                    Object.keys(registryData).forEach(key => {
+                        const input = document.querySelector(`input[name="${key}"]`);
+                        if (input) input.value = registryData[key];
+                    });
+                }
+                
+                const savedImage = localStorage.getItem('profileImage');
+                if (savedImage) {
+                    document.getElementById('profileImage').src = savedImage;
+                }
+            }
         });
     });
 
