@@ -574,6 +574,80 @@ function showNotification(message, type = 'success') {
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
 }
+        // Görev listesini localStorage'dan al
+function getTasks() {
+    return JSON.parse(localStorage.getItem('tasks')) || [];
+}
+
+// Görevi localStorage'a kaydet
+function saveTask(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const newTask = {
+        id: Date.now(),
+        title: formData.get('taskTitle'),
+        description: formData.get('taskDescription'),
+        assignee: formData.get('assignee'),
+        dueDate: formData.get('dueDate'),
+        priority: formData.get('priority'),
+        points: formData.get('taskPoints'),
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+
+    const tasks = getTasks();
+    tasks.push(newTask);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+
+    closeTaskModal();
+    event.target.reset();
+    showNotification('Görev başarıyla eklendi', 'success');
+    updateTaskList();
+}
+
+// Görev listesini güncelle
+function updateTaskList() {
+    const tasks = getTasks();
+    const taskList = document.querySelector('.task-list');
+    if (!taskList) return;
+
+    taskList.innerHTML = tasks.map(task => `
+        <div class="task-item" onclick="showTaskDetail(${task.id})">
+            <div class="task-info">
+                <h4>${task.title}</h4>
+                <p>${task.description}</p>
+            </div>
+            <div class="task-meta">
+                <span class="deadline">Son Tarih: ${formatDate(task.dueDate)}</span>
+                <span class="status ${task.status}">${formatStatus(task.status)}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Yardımcı fonksiyonlar
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('tr-TR');
+}
+
+function formatStatus(status) {
+    const statusMap = {
+        pending: 'Beklemede',
+        'in-progress': 'Devam Ediyor',
+        completed: 'Tamamlandı'
+    };
+    return statusMap[status] || status;
+}
+
+// Sayfa yüklendiğinde görev listesini güncelle
+document.addEventListener('DOMContentLoaded', function() {
+    const originalInit = window.onload || function(){};
+    window.onload = function() {
+        originalInit();
+        updateTaskList();
+    };
+}
 
 // Sayfa yükleme ve navigasyon
 document.addEventListener('DOMContentLoaded', function() {
