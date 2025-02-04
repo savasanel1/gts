@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Oturum Kontrolü -->
+    <script>
+        if (!localStorage.getItem('currentUserId')) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
@@ -45,16 +52,18 @@
             </a>
         </div>
         <div class="bottom-user">
-            <div class="name">Ahmet Yılmaz</div>
-            <div class="role">Yönetici</div>
+            <div class="name" id="currentUserName"></div>
+            <div class="role" id="currentUserRole"></div>
             <div class="user-points">
                 <i class="fas fa-star"></i>
                 <span id="userTotalPoints">0</span> Puan
             </div>
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+            </button>
         </div>
     </div>
-
-    <!-- Main Content -->
+        <!-- Main Content -->
     <div class="main-content">
         <!-- Top Bar -->
         <div class="top-bar">
@@ -68,7 +77,7 @@
                     <span class="notification-badge">3</span>
                 </div>
                 <div class="user-profile">
-                    <span>Ahmet Yılmaz</span>
+                    <span id="headerUserName"></span>
                     <div class="user-points-badge">
                         <i class="fas fa-star"></i>
                         <span id="headerUserPoints">0</span>
@@ -82,7 +91,8 @@
             <!-- Burası dinamik olarak değişecek -->
         </div>
     </div>
-        <!-- User Modal -->
+
+    <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">&times;</span>
@@ -284,22 +294,24 @@
                         <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
                     </button>
                 </div>
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>Ad Soyad</th>
-                            <th>Kullanıcı Adı</th>
-                            <th>E-posta</th>
-                            <th>Rol</th>
-                            <th>Puan</th>
-                            <th>Durum</th>
-                            <th>İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                        <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
-                    </tbody>
-                </table>
+                <div class="users-table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>E-posta</th>
+                                <th>Rol</th>
+                                <th>Puan</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         `,
         tasks: `
@@ -326,7 +338,7 @@
                 </div>
             </div>
         `,
-        points: `
+                points: `
             <div class="dashboard-content">
                 <div class="points-summary">
                     <h2>Puan Durumu</h2>
@@ -359,7 +371,7 @@
                 </div>
             </div>
         `,
-                settings: `
+        settings: `
             <div class="settings-container">
                 <div class="settings-grid">
                     <!-- Profil Bilgileri -->
@@ -382,11 +394,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Ad Soyad</label>
-                                    <input type="text" name="fullName" required>
+                                    <input type="text" name="fullName" id="profileFullName" required>
                                 </div>
                                 <div class="form-group">
                                     <label>E-posta</label>
-                                    <input type="email" name="email" required>
+                                    <input type="email" name="email" id="profileEmail" required>
                                 </div>
                                 <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
                             </form>
@@ -450,8 +462,7 @@
             </div>
         `
     };
-
-    // Puan sistemi
+                // Puan sistemi
     const pointsSystem = {
         checkTaskDeadlines: function() {
             const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -523,7 +534,8 @@
             document.getElementById('totalPoints').textContent = points;
         }
     };
-                // Ünvan ve Birim yönetimi
+
+    // Ünvan ve Birim yönetimi
     let titles = JSON.parse(localStorage.getItem('titles')) || [
         'Profesör',
         'Doçent',
@@ -540,7 +552,31 @@
         'İktisadi ve İdari Bilimler Fakültesi'
     ];
 
-    // Görev yönetimi fonksiyonları
+    // Oturum yönetimi
+    function logout() {
+        localStorage.removeItem('currentUserId');
+        localStorage.removeItem('currentUserRole');
+        localStorage.removeItem('currentUserName');
+        window.location.href = 'login.html';
+    }
+
+    function handleRoleBasedAccess(role) {
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        menuItems.forEach(item => {
+            const page = item.getAttribute('data-page');
+            
+            if (page === 'users' && !['super_admin', 'admin'].includes(role)) {
+                item.style.display = 'none';
+            }
+            
+            if (page === 'tasks' && !['super_admin', 'admin', 'manager'].includes(role)) {
+                const taskButtons = document.querySelectorAll('.new-task-btn');
+                taskButtons.forEach(btn => btn.style.display = 'none');
+            }
+        });
+    }
+                // Görev yönetimi fonksiyonları
     function saveTask(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -567,6 +603,7 @@
             department: formData.get('department'),
             status: 'pending',
             createdAt: new Date().toISOString(),
+            createdBy: localStorage.getItem('currentUserId'),
             penaltyApplied: false
         };
 
@@ -592,12 +629,19 @@
         const taskList = document.getElementById('taskList');
         const assignedTaskList = document.getElementById('assignedTaskList');
         const currentUserId = localStorage.getItem('currentUserId');
+        const currentUserRole = localStorage.getItem('currentUserRole');
         
         const taskHTML = tasks
             .filter(task => {
                 const statusFilter = document.getElementById('taskStatusFilter')?.value;
                 if (!statusFilter || statusFilter === 'all') return true;
                 return task.status === statusFilter;
+            })
+            .filter(task => {
+                // Rol bazlı görev filtreleme
+                if (['super_admin', 'admin'].includes(currentUserRole)) return true;
+                if (currentUserRole === 'manager') return task.department === getUserDepartment(currentUserId);
+                return task.assignedTo === currentUserId;
             })
             .map(task => `
                 <div class="task-item ${task.status}" onclick="editTask('${task.taskId}')">
@@ -614,9 +658,11 @@
                         <span class="title">${task.title}</span>
                         <span class="status ${task.status}">${formatStatus(task.status)}</span>
                         ${task.assignedTo === currentUserId && task.status !== 'completed' ? `
-                            <button class="complete-task-btn" onclick="completeTask('${task.taskId}', event)">
-                                Görevi Tamamla
-                            </button>
+                            <div class="task-actions">
+                                <button class="complete-task-btn" onclick="completeTask('${task.taskId}', event)">
+                                    <i class="fas fa-check"></i> Görevi Tamamla
+                                </button>
+                            </div>
                         ` : ''}
                     </div>
                 </div>
@@ -631,22 +677,30 @@
         const task = tasks.find(t => t.taskId === taskId);
         
         if (task) {
-            openTaskModal();
-            const form = document.getElementById('taskForm');
-            
-            form.taskId.value = task.taskId;
-            form.taskName.value = task.taskName;
-            form.taskInstructions.value = task.taskInstructions;
-            form.startDate.value = task.startDateTime.split('T')[0];
-            form.startTime.value = task.startDateTime.split('T')[1].substring(0, 5);
-            form.endDate.value = task.endDateTime.split('T')[0];
-            form.endTime.value = task.endDateTime.split('T')[1].substring(0, 5);
-            form.taskPoints.value = task.taskPoints;
-            form.assignedTo.value = task.assignedTo;
-            form.title.value = task.title;
-            form.department.value = task.department;
+            const currentUserRole = localStorage.getItem('currentUserRole');
+            const currentUserId = localStorage.getItem('currentUserId');
 
-            document.getElementById('taskModalTitle').textContent = 'Görevi Düzenle';
+            // Sadece görevi oluşturan kişi veya yöneticiler düzenleyebilir
+            if (task.createdBy === currentUserId || ['super_admin', 'admin'].includes(currentUserRole)) {
+                openTaskModal();
+                const form = document.getElementById('taskForm');
+                
+                form.taskId.value = task.taskId;
+                form.taskName.value = task.taskName;
+                form.taskInstructions.value = task.taskInstructions;
+                form.startDate.value = task.startDateTime.split('T')[0];
+                form.startTime.value = task.startDateTime.split('T')[1].substring(0, 5);
+                form.endDate.value = task.endDateTime.split('T')[0];
+                form.endTime.value = task.endDateTime.split('T')[1].substring(0, 5);
+                form.taskPoints.value = task.taskPoints;
+                form.assignedTo.value = task.assignedTo;
+                form.title.value = task.title;
+                form.department.value = task.department;
+
+                document.getElementById('taskModalTitle').textContent = 'Görevi Düzenle';
+            } else {
+                showNotification('Bu görevi düzenleme yetkiniz yok', 'error');
+            }
         }
     }
 
@@ -678,7 +732,133 @@
             pointsSystem.updatePointsDisplay();
         }
     }
-                // Ünvan ve Birim yönetimi fonksiyonları
+                // Kullanıcı yönetimi fonksiyonları
+    function saveUser(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        // Kullanıcı adının benzersiz olduğunu kontrol et
+        if (users.some(user => user.username === formData.get('username'))) {
+            showNotification('Bu kullanıcı adı zaten kullanılıyor', 'error');
+            return;
+        }
+
+        const user = {
+            fullName: formData.get('fullName'),
+            username: formData.get('username'),
+            email: formData.get('email'),
+            password: formData.get('password'),
+            role: formData.get('role'),
+            status: formData.get('status'),
+            createdAt: new Date().toISOString()
+        };
+        
+        users.push(user);
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        updateUserTable();
+        closeUserModal();
+        event.target.reset();
+        showNotification('Kullanıcı başarıyla eklendi', 'success');
+    }
+
+    function loadUsers() {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const assigneeSelect = document.getElementById('assigneeSelect');
+        
+        if (assigneeSelect) {
+            assigneeSelect.innerHTML = '<option value="">Seçiniz...</option>';
+            users.filter(user => user.status === 'active').forEach(user => {
+                assigneeSelect.innerHTML += `
+                    <option value="${user.username}">${user.fullName}</option>
+                `;
+            });
+        }
+    }
+
+    function updateUserTable() {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const tbody = document.getElementById('userTableBody');
+        if (tbody) {
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.fullName}</td>
+                    <td>${user.username}</td>
+                    <td>${user.email}</td>
+                    <td><span class="role-badge role-${user.role}">${formatRoleName(user.role)}</span></td>
+                    <td>
+                        <span class="user-points">
+                            <i class="fas fa-star"></i> ${pointsSystem.getUserPoints(user.username)}
+                        </span>
+                    </td>
+                    <td><span class="status-${user.status}">${user.status === 'active' ? 'Aktif' : 'Pasif'}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editUser('${user.username}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteUser('${user.username}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
+
+    function editUser(username) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.username === username);
+        
+        if (user) {
+            openUserModal();
+            const form = document.getElementById('userForm');
+            
+            form.fullName.value = user.fullName;
+            form.username.value = user.username;
+            form.email.value = user.email;
+            form.role.value = user.role;
+            form.status.value = user.status;
+            
+            // Şifre alanını gizle
+            form.querySelector('input[name="password"]').parentElement.style.display = 'none';
+            
+            // Form gönderimini düzenleme moduna ayarla
+            form.onsubmit = function(e) {
+                e.preventDefault();
+                const updatedUsers = users.map(u => {
+                    if (u.username === username) {
+                        return {
+                            ...u,
+                            fullName: form.fullName.value,
+                            email: form.email.value,
+                            role: form.role.value,
+                            status: form.status.value,
+                            updatedAt: new Date().toISOString()
+                        };
+                    }
+                    return u;
+                });
+                
+                localStorage.setItem('users', JSON.stringify(updatedUsers));
+                updateUserTable();
+                closeUserModal();
+                showNotification('Kullanıcı başarıyla güncellendi', 'success');
+            };
+        }
+    }
+
+    function deleteUser(username) {
+        if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const updatedUsers = users.filter(u => u.username !== username);
+            localStorage.setItem('users', JSON.stringify(updatedUsers));
+            updateUserTable();
+            showNotification('Kullanıcı başarıyla silindi', 'success');
+        }
+    }
+
+    // Ünvan ve Birim yönetimi fonksiyonları
     function loadTitles() {
         const titleSelect = document.getElementById('titleSelect');
         if (titleSelect) {
@@ -726,93 +906,36 @@
             `).join('');
         }
     }
-
-    function addNewTitle() {
-        const newTitle = document.getElementById('newTitle').value.trim();
-        if (newTitle && !titles.includes(newTitle)) {
-            titles.push(newTitle);
-            localStorage.setItem('titles', JSON.stringify(titles));
-            loadTitles();
-            updateTitlesList();
-            document.getElementById('newTitle').value = '';
-            showNotification('Yeni ünvan eklendi', 'success');
-        } else {
-            showNotification('Geçerli bir ünvan giriniz veya bu ünvan zaten mevcut', 'error');
-        }
-    }
-
-    function addNewDepartment() {
-        const newDepartment = document.getElementById('newDepartment').value.trim();
-        if (newDepartment && !departments.includes(newDepartment)) {
-            departments.push(newDepartment);
-            localStorage.setItem('departments', JSON.stringify(departments));
-            loadDepartments();
-            updateDepartmentsList();
-            document.getElementById('newDepartment').value = '';
-            showNotification('Yeni birim eklendi', 'success');
-        } else {
-            showNotification('Geçerli bir birim giriniz veya bu birim zaten mevcut', 'error');
-        }
-    }
-
-    function removeTitle(title) {
-        titles = titles.filter(t => t !== title);
-        localStorage.setItem('titles', JSON.stringify(titles));
+                // Modal işlemleri
+    function openTaskModal() {
+        document.getElementById('taskModal').style.display = 'block';
+        document.getElementById('taskModalTitle').textContent = 'Yeni Görev Ekle';
+        document.getElementById('taskForm').reset();
+        loadUsers();
         loadTitles();
-        updateTitlesList();
-        showNotification('Ünvan silindi', 'success');
-    }
-
-    function removeDepartment(dept) {
-        departments = departments.filter(d => d !== dept);
-        localStorage.setItem('departments', JSON.stringify(departments));
         loadDepartments();
+        updateTitlesList();
         updateDepartmentsList();
-        showNotification('Birim silindi', 'success');
     }
 
-    // Kullanıcı yönetimi fonksiyonları
-    function loadUsers() {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const assigneeSelect = document.getElementById('assigneeSelect');
-        
-        if (assigneeSelect) {
-            assigneeSelect.innerHTML = '<option value="">Seçiniz...</option>';
-            users.filter(user => user.status === 'active').forEach(user => {
-                assigneeSelect.innerHTML += `
-                    <option value="${user.username}">${user.fullName}</option>
-                `;
-            });
+    function closeTaskModal() {
+        document.getElementById('taskModal').style.display = 'none';
+        document.getElementById('taskForm').reset();
+        // Şifre alanını tekrar görünür yap (düzenleme modundan sonra)
+        const passwordField = document.querySelector('input[name="password"]');
+        if (passwordField) {
+            passwordField.parentElement.style.display = 'block';
         }
     }
 
-    function updateUserTable() {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const tbody = document.getElementById('userTableBody');
-        if (tbody) {
-            tbody.innerHTML = users.map(user => `
-                <tr>
-                    <td>${user.fullName}</td>
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td><span class="role-badge role-${user.role}">${formatRoleName(user.role)}</span></td>
-                    <td>
-                        <span class="user-points">
-                            <i class="fas fa-star"></i> ${pointsSystem.getUserPoints(user.username)}
-                        </span>
-                    </td>
-                    <td><span class="status-${user.status}">${user.status === 'active' ? 'Aktif' : 'Pasif'}</span></td>
-                    <td>
-                        <button class="action-btn edit-btn" onclick="editUser('${user.username}')">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="action-btn delete-btn" onclick="deleteUser('${user.username}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+    function openUserModal() {
+        document.getElementById('userModal').style.display = 'block';
+        document.getElementById('userForm').reset();
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').style.display = 'none';
+        document.getElementById('userForm').reset();
     }
 
     // Yardımcı fonksiyonlar
@@ -863,32 +986,7 @@
         };
         return roles[role] || role;
     }
-                // Modal işlemleri
-    function openTaskModal() {
-        document.getElementById('taskModal').style.display = 'block';
-        document.getElementById('taskModalTitle').textContent = 'Yeni Görev Ekle';
-        document.getElementById('taskForm').reset();
-        loadUsers();
-        loadTitles();
-        loadDepartments();
-        updateTitlesList();
-        updateDepartmentsList();
-    }
 
-    function closeTaskModal() {
-        document.getElementById('taskModal').style.display = 'none';
-        document.getElementById('taskForm').reset();
-    }
-
-    function openUserModal() {
-        document.getElementById('userModal').style.display = 'block';
-    }
-
-    function closeUserModal() {
-        document.getElementById('userModal').style.display = 'none';
-    }
-
-    // Bildirim sistemi
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -902,45 +1000,81 @@
     }
 
     // Profil ve ayarlar fonksiyonları
+    function loadProfileData() {
+        const currentUserId = localStorage.getItem('currentUserId');
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.username === currentUserId);
+
+        if (user) {
+            document.getElementById('profileFullName').value = user.fullName;
+            document.getElementById('profileEmail').value = user.email;
+        }
+
+        // Profil resmini yükle
+        const profileImage = localStorage.getItem('profileImage');
+        if (profileImage) {
+            document.getElementById('profileImage').src = profileImage;
+        }
+    }
+
     function updateProfile(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const profileData = {
-            fullName: formData.get('fullName'),
-            email: formData.get('email'),
-            updatedAt: new Date().toISOString()
-        };
+        const currentUserId = localStorage.getItem('currentUserId');
+        const users = JSON.parse(localStorage.getItem('users')) || [];
         
-        localStorage.setItem('profileData', JSON.stringify(profileData));
+        const updatedUsers = users.map(user => {
+            if (user.username === currentUserId) {
+                return {
+                    ...user,
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            return user;
+        });
+
+        localStorage.setItem('users', JSON.stringify(updatedUsers));
+        localStorage.setItem('currentUserName', formData.get('fullName'));
+        
+        // Kullanıcı adını güncelle
+        document.getElementById('currentUserName').textContent = formData.get('fullName');
+        document.querySelector('.user-profile span').textContent = formData.get('fullName');
+        
         showNotification('Profil bilgileri güncellendi', 'success');
     }
 
     function updatePassword(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        
+        const currentUserId = localStorage.getItem('currentUserId');
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.username === currentUserId);
+
         if (formData.get('newPassword') !== formData.get('confirmPassword')) {
             showNotification('Yeni şifreler eşleşmiyor', 'error');
             return;
         }
-        
-        // Gerçek uygulamada şifre değiştirme API'si kullanılmalı
-        showNotification('Şifre başarıyla güncellendi', 'success');
-        event.target.reset();
-    }
 
-    function updateNotificationSettings(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const settings = {
-            emailNotifications: formData.get('emailNotifications') === 'on',
-            taskNotifications: formData.get('taskNotifications') === 'on',
-            pointNotifications: formData.get('pointNotifications') === 'on',
-            updatedAt: new Date().toISOString()
-        };
-        
-        localStorage.setItem('notificationSettings', JSON.stringify(settings));
-        showNotification('Bildirim ayarları güncellendi', 'success');
+        if (user && user.password === formData.get('currentPassword')) {
+            const updatedUsers = users.map(u => {
+                if (u.username === currentUserId) {
+                    return {
+                        ...u,
+                        password: formData.get('newPassword'),
+                        passwordUpdatedAt: new Date().toISOString()
+                    };
+                }
+                return u;
+            });
+
+            localStorage.setItem('users', JSON.stringify(updatedUsers));
+            event.target.reset();
+            showNotification('Şifre başarıyla güncellendi', 'success');
+        } else {
+            showNotification('Mevcut şifre hatalı', 'error');
+        }
     }
 
     function previewImage(event) {
@@ -963,10 +1097,16 @@
 
     // Sayfa yükleme ve navigasyon
     document.addEventListener('DOMContentLoaded', function() {
-        // Test için geçici kullanıcı ID'si
-        if (!localStorage.getItem('currentUserId')) {
-            localStorage.setItem('currentUserId', 'test_user');
-        }
+        // Kullanıcı bilgilerini yükle
+        const currentUserName = localStorage.getItem('currentUserName');
+        const currentUserRole = localStorage.getItem('currentUserRole');
+        
+        document.getElementById('currentUserName').textContent = currentUserName;
+        document.getElementById('currentUserRole').textContent = formatRoleName(currentUserRole);
+        document.getElementById('headerUserName').textContent = currentUserName;
+        
+        // Rol bazlı erişim kontrolü
+        handleRoleBasedAccess(currentUserRole);
 
         // Menü işlemleri
         const menuItems = document.querySelectorAll('.menu-item');
@@ -1007,8 +1147,6 @@
         // İlk yükleme işlemleri
         document.querySelector('.menu-item[data-page="home"]').click();
         pointsSystem.updatePointsDisplay();
-        
-        // Görev kontrolünü başlat
         pointsSystem.checkTaskDeadlines();
     });
 
