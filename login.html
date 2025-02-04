@@ -117,14 +117,72 @@
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
+
+            // Kullanıcıları localStorage'dan al
+            const users = JSON.parse(localStorage.getItem('users')) || [];
             
-            // Örnek kullanıcı kontrolü
-            if(username === 'admin' && password === 'admin123') {
-                window.location.href = 'index.html';
+            // Kullanıcı kontrolü
+            const user = users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                if (user.status === 'active') {
+                    // Kullanıcı bilgilerini localStorage'a kaydet
+                    localStorage.setItem('currentUserId', user.username);
+                    localStorage.setItem('currentUserRole', user.role);
+                    localStorage.setItem('currentUserName', user.fullName);
+                    
+                    // Ana sayfaya yönlendir
+                    window.location.href = 'index.html';
+                } else {
+                    showLoginError('Bu hesap pasif durumda. Yöneticinize başvurun.');
+                }
             } else {
-                alert('Kullanıcı adı veya şifre hatalı!');
+                showLoginError('Kullanıcı adı veya şifre hatalı!');
             }
         });
+
+        // Hata mesajı gösterme fonksiyonu
+        function showLoginError(message) {
+            // Varsa eski hata mesajını kaldır
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Yeni hata mesajı oluştur
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.style.cssText = `
+                color: #dc3545;
+                background: #f8d7da;
+                border: 1px solid #f5c6cb;
+                padding: 10px;
+                border-radius: 4px;
+                margin-top: 15px;
+                text-align: center;
+                font-size: 14px;
+            `;
+            errorDiv.textContent = message;
+            
+            // Hata mesajını form'dan sonra ekle
+            document.getElementById('loginForm').after(errorDiv);
+            
+            // 3 saniye sonra hata mesajını kaldır
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 3000);
+        }
+
+        // Şifremi unuttum fonksiyonu
+        document.querySelector('.forgot-password a').addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Şifre sıfırlama özelliği yakında eklenecek. Lütfen yöneticinizle iletişime geçin.');
+        });
+
+        // Eğer kullanıcı zaten giriş yapmışsa ana sayfaya yönlendir
+        if (localStorage.getItem('currentUserId')) {
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
