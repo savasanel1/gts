@@ -562,122 +562,132 @@
 
     function handleRoleBasedAccess(role) {
         const menuItems = document.querySelectorAll('.menu-item');
-        const currentUserRole = localStorage.getItem('currentUserRole');
         
         menuItems.forEach(item => {
             const page = item.getAttribute('data-page');
             
-            // Kullanıcı yönetimi sayfasını sadece süper admin ve admin görebilir
             if (page === 'users') {
-                if (!['super_admin', 'admin'].includes(currentUserRole)) {
+                if (!['super_admin', 'admin'].includes(role)) {
                     item.style.display = 'none';
                 } else {
                     item.style.display = 'flex';
                 }
             }
-            
-            // Görev ekleme butonunu sadece amir ve üstü görebilir
-            if (page === 'tasks') {
-                const taskButtons = document.querySelectorAll('.new-task-btn');
-                if (!['super_admin', 'admin', 'manager'].includes(currentUserRole)) {
-                    taskButtons.forEach(btn => btn.style.display = 'none');
-                } else {
-                    taskButtons.forEach(btn => btn.style.display = 'flex');
-                }
-            }
         });
+    }
+
+    // Yardımcı fonksiyonlar
+    function generateTaskId() {
+        return 'task_' + new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        return `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })}`;
+    }
+
+    function formatStatus(status) {
+        const statusMap = {
+            pending: 'Beklemede',
+            'in-progress': 'Devam Ediyor',
+            completed: 'Tamamlandı',
+            overdue: 'Gecikmiş'
+        };
+        return statusMap[status] || status;
+    }
+
+    function formatRoleName(role) {
+        const roles = {
+            super_admin: 'Süper Admin',
+            admin: 'Yönetici',
+            manager: 'Amir',
+            user: 'Personel'
+        };
+        return roles[role] || role;
+    }
+
+    function showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
     }
                 // Görev yönetimi fonksiyonları
     function saveTask(event) {
-    event.preventDefault();
-    
-    try {
-        const formData = new FormData(event.target);
-        const taskId = formData.get('taskId') || generateTaskId();
+        event.preventDefault();
         
-        const startDateTime = new Date(formData.get('startDate') + 'T' + formData.get('startTime'));
-        const endDateTime = new Date(formData.get('endDate') + 'T' + formData.get('endTime'));
+        try {
+            const formData = new FormData(event.target);
+            const taskId = formData.get('taskId') || generateTaskId();
+            
+            const startDateTime = new Date(`${formData.get('startDate')}T${formData.get('startTime')}`);
+            const endDateTime = new Date(`${formData.get('endDate')}T${formData.get('endTime')}`);
 
-        if (endDateTime < startDateTime) {
-            showNotification('Bitiş tarihi başlangıç tarihinden önce olamaz', 'error');
-            return;
+            if (endDateTime < startDateTime) {
+                showNotification('Bitiş tarihi başlangıç tarihinden önce olamaz', 'error');
+                return;
+            }
+
+            const task = {
+                taskId: taskId,
+                taskName: formData.get('taskName'),
+                taskInstructions: formData.get('taskInstructions'),
+                startDateTime: startDateTime.toISOString(),
+                endDateTime: endDateTime.toISOString(),
+                taskPoints: Number(formData.get('taskPoints')),
+                penaltyPoints: Number(formData.get('taskPoints')) * 0.8,
+                assignedTo: formData.get('assignedTo'),
+                title: formData.get('title'),
+                department: formData.get('department'),
+                status: 'pending',
+                createdAt: new Date().toISOString(),
+                createdBy: localStorage.getItem('currentUserId'),
+                penaltyApplied: false
+            };
+
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            const taskIndex = tasks.findIndex(t => t.taskId === taskId);
+            
+            if (taskIndex === -1) {
+                tasks.push(task);
+            } else {
+                tasks[taskIndex] = {...tasks[taskIndex], ...task};
+            }
+            
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            loadTasks();
+            updateDashboardCounts();
+            closeTaskModal();
+            event.target.reset();
+            showNotification('Görev başarıyla kaydedildi', 'success');
+        } catch (error) {
+            console.error('Görev kaydedilirken hata oluştu:', error);
+            showNotification('Görev kaydedilirken bir hata oluştu', 'error');
         }
-
-        const task = {
-            taskId: taskId,
-            taskName: formData.get('taskName'),
-            taskInstructions: formData.get('taskInstructions'),
-            startDateTime: startDateTime.toISOString(),
-            endDateTime: endDateTime.toISOString(),
-            taskPoints: Number(formData.get('taskPoints')),
-            penaltyPoints: Number(formData.get('taskPoints')) * 0.8,
-            assignedTo: formData.get('assignedTo'),
-            title: formData.get('title'),
-            department: formData.get('department'),
-            status: 'pending',
-            createdAt: new Date().toISOString(),
-            createdBy: localStorage.getItem('currentUserId'),
-            penaltyApplied: false
-        };
-
-        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        const taskIndex = tasks.findIndex(t => t.taskId === taskId);
-        
-        if (taskIndex === -1) {
-            tasks.push(task);
-        } else {
-            tasks[taskIndex] = {...tasks[taskIndex], ...task};
-        }
-        
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        loadTasks();
-        updateDashboardCounts();
-        closeTaskModal();
-        event.target.reset();
-        showNotification('Görev başarıyla kaydedildi', 'success');
-    } catch (error) {
-        console.error('Görev kaydedilirken hata oluştu:', error);
-        showNotification('Görev kaydedilirken bir hata oluştu', 'error');
     }
-}
 
     function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const taskList = document.getElementById('taskList');
-    const assignedTaskList = document.getElementById('assignedTaskList');
-    const currentUserId = localStorage.getItem('currentUserId');
-    
-    const taskHTML = tasks.map(task => `
-        <div class="task-item ${task.status}">
-            <div class="task-info">
-                <h4>${task.taskName}</h4>
-                <p>${task.taskInstructions}</p>
-            </div>
-            <div class="task-meta">
-                <span class="deadline">Başlangıç: ${formatDateTime(task.startDateTime)}</span>
-                <span class="deadline">Bitiş: ${formatDateTime(task.endDateTime)}</span>
-                <span class="points">Puan: ${task.taskPoints}</span>
-                ${task.penaltyApplied ? `<span class="penalty">Ceza Puanı: ${task.penaltyPoints}</span>` : ''}
-                <span class="department">${task.department}</span>
-                <span class="title">${task.title}</span>
-                <span class="status ${task.status}">${formatStatus(task.status)}</span>
-                ${task.assignedTo === currentUserId && task.status !== 'completed' ? `
-                    <div class="task-actions">
-                        <button class="complete-task-btn" onclick="completeTask('${task.taskId}', event)">
-                            <i class="fas fa-check"></i> Görevi Tamamla
-                        </button>
-                    </div>
-                ` : ''}
-            </div>
-        </div>
-    `).join('');
-
-    if (taskList) taskList.innerHTML = taskHTML;
-    if (assignedTaskList) assignedTaskList.innerHTML = taskHTML;
-
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const taskList = document.getElementById('taskList');
+        const assignedTaskList = document.getElementById('assignedTaskList');
+        const currentUserId = localStorage.getItem('currentUserId');
+        const currentUserRole = localStorage.getItem('currentUserRole');
+        
+        const taskHTML = tasks
+            .filter(task => {
+                const statusFilter = document.getElementById('taskStatusFilter')?.value;
+                if (!statusFilter || statusFilter === 'all') return true;
+                return task.status === statusFilter;
             })
             .filter(task => {
-                // Rol bazlı görev filtreleme
                 if (['super_admin', 'admin'].includes(currentUserRole)) return true;
                 if (currentUserRole === 'manager') return task.department === getUserDepartment(currentUserId);
                 return task.assignedTo === currentUserId;
@@ -698,7 +708,7 @@
                         <span class="status ${task.status}">${formatStatus(task.status)}</span>
                         ${task.assignedTo === currentUserId && task.status !== 'completed' ? `
                             <div class="task-actions">
-                                <button class="complete-task-btn" onclick="completeTask('${task.taskId}', event)">
+                                <button class="complete-task-btn" onclick="event.stopPropagation(); completeTask('${task.taskId}')">
                                     <i class="fas fa-check"></i> Görevi Tamamla
                                 </button>
                             </div>
@@ -709,6 +719,8 @@
 
         if (taskList) taskList.innerHTML = taskHTML;
         if (assignedTaskList) assignedTaskList.innerHTML = taskHTML;
+        
+        updateDashboardCounts();
     }
 
     function editTask(taskId) {
@@ -719,7 +731,6 @@
             const currentUserRole = localStorage.getItem('currentUserRole');
             const currentUserId = localStorage.getItem('currentUserId');
 
-            // Sadece görevi oluşturan kişi veya yöneticiler düzenleyebilir
             if (task.createdBy === currentUserId || ['super_admin', 'admin'].includes(currentUserRole)) {
                 openTaskModal();
                 const form = document.getElementById('taskForm');
@@ -727,10 +738,15 @@
                 form.taskId.value = task.taskId;
                 form.taskName.value = task.taskName;
                 form.taskInstructions.value = task.taskInstructions;
-                form.startDate.value = task.startDateTime.split('T')[0];
-                form.startTime.value = task.startDateTime.split('T')[1].substring(0, 5);
-                form.endDate.value = task.endDateTime.split('T')[0];
-                form.endTime.value = task.endDateTime.split('T')[1].substring(0, 5);
+                
+                const startDate = new Date(task.startDateTime);
+                const endDate = new Date(task.endDateTime);
+                
+                form.startDate.value = startDate.toISOString().split('T')[0];
+                form.startTime.value = startDate.toISOString().split('T')[1].substring(0, 5);
+                form.endDate.value = endDate.toISOString().split('T')[0];
+                form.endTime.value = endDate.toISOString().split('T')[1].substring(0, 5);
+                
                 form.taskPoints.value = task.taskPoints;
                 form.assignedTo.value = task.assignedTo;
                 form.title.value = task.title;
@@ -743,9 +759,7 @@
         }
     }
 
-    function completeTask(taskId, event) {
-        event.stopPropagation();
-        
+    function completeTask(taskId) {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         const taskIndex = tasks.findIndex(t => t.taskId === taskId);
         
@@ -845,58 +859,6 @@
         }
     }
 
-    function editUser(username) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === username);
-        
-        if (user) {
-            openUserModal();
-            const form = document.getElementById('userForm');
-            
-            form.fullName.value = user.fullName;
-            form.username.value = user.username;
-            form.email.value = user.email;
-            form.role.value = user.role;
-            form.status.value = user.status;
-            
-            // Şifre alanını gizle
-            form.querySelector('input[name="password"]').parentElement.style.display = 'none';
-            
-            // Form gönderimini düzenleme moduna ayarla
-            form.onsubmit = function(e) {
-                e.preventDefault();
-                const updatedUsers = users.map(u => {
-                    if (u.username === username) {
-                        return {
-                            ...u,
-                            fullName: form.fullName.value,
-                            email: form.email.value,
-                            role: form.role.value,
-                            status: form.status.value,
-                            updatedAt: new Date().toISOString()
-                        };
-                    }
-                    return u;
-                });
-                
-                localStorage.setItem('users', JSON.stringify(updatedUsers));
-                updateUserTable();
-                closeUserModal();
-                showNotification('Kullanıcı başarıyla güncellendi', 'success');
-            };
-        }
-    }
-
-    function deleteUser(username) {
-        if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const updatedUsers = users.filter(u => u.username !== username);
-            localStorage.setItem('users', JSON.stringify(updatedUsers));
-            updateUserTable();
-            showNotification('Kullanıcı başarıyla silindi', 'success');
-        }
-    }
-
     // Ünvan ve Birim yönetimi fonksiyonları
     function loadTitles() {
         const titleSelect = document.getElementById('titleSelect');
@@ -918,48 +880,77 @@
         }
     }
 
-   function updateTitlesList() {
-    const titleList = document.getElementById('titleList');
-    if (titleList) {
-        titleList.innerHTML = titles.map(title => `
-            <div class="custom-field-item">
-                <span>${title}</span>
-                <button type="button" class="remove-field-btn" onclick="event.stopPropagation(); removeTitle('${title}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `).join('');
+    function updateTitlesList() {
+        const titleList = document.getElementById('titleList');
+        if (titleList) {
+            titleList.innerHTML = titles.map(title => `
+                <div class="custom-field-item">
+                    <span>${title}</span>
+                    <button type="button" class="remove-field-btn" onclick="event.stopPropagation(); removeTitle('${title}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
     }
-}
-    function removeTitle(title) {
-    titles = titles.filter(t => t !== title);
-    localStorage.setItem('titles', JSON.stringify(titles));
-    loadTitles();
-    updateTitlesList();
-    showNotification('Ünvan silindi', 'success');
-}
-
-    function removeDepartment(dept) {
-    departments = departments.filter(d => d !== dept);
-    localStorage.setItem('departments', JSON.stringify(departments));
-    loadDepartments();
-    updateDepartmentsList();
-    showNotification('Birim silindi', 'success');
-}
 
     function updateDepartmentsList() {
-    const departmentList = document.getElementById('departmentList');
-    if (departmentList) {
-        departmentList.innerHTML = departments.map(dept => `
-            <div class="custom-field-item">
-                <span>${dept}</span>
-                <button type="button" class="remove-field-btn" onclick="event.stopPropagation(); removeDepartment('${dept}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `).join('');
+        const departmentList = document.getElementById('departmentList');
+        if (departmentList) {
+            departmentList.innerHTML = departments.map(dept => `
+                <div class="custom-field-item">
+                    <span>${dept}</span>
+                    <button type="button" class="remove-field-btn" onclick="event.stopPropagation(); removeDepartment('${dept}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
     }
-}
+
+    function addNewTitle() {
+        const newTitle = document.getElementById('newTitle').value.trim();
+        if (newTitle && !titles.includes(newTitle)) {
+            titles.push(newTitle);
+            localStorage.setItem('titles', JSON.stringify(titles));
+            loadTitles();
+            updateTitlesList();
+            document.getElementById('newTitle').value = '';
+            showNotification('Yeni ünvan eklendi', 'success');
+        } else {
+            showNotification('Geçerli bir ünvan giriniz veya bu ünvan zaten mevcut', 'error');
+        }
+    }
+
+    function addNewDepartment() {
+        const newDepartment = document.getElementById('newDepartment').value.trim();
+        if (newDepartment && !departments.includes(newDepartment)) {
+            departments.push(newDepartment);
+            localStorage.setItem('departments', JSON.stringify(departments));
+            loadDepartments();
+            updateDepartmentsList();
+            document.getElementById('newDepartment').value = '';
+            showNotification('Yeni birim eklendi', 'success');
+        } else {
+            showNotification('Geçerli bir birim giriniz veya bu birim zaten mevcut', 'error');
+        }
+    }
+
+    function removeTitle(title) {
+        titles = titles.filter(t => t !== title);
+        localStorage.setItem('titles', JSON.stringify(titles));
+        loadTitles();
+        updateTitlesList();
+        showNotification('Ünvan silindi', 'success');
+    }
+
+    function removeDepartment(dept) {
+        departments = departments.filter(d => d !== dept);
+        localStorage.setItem('departments', JSON.stringify(departments));
+        loadDepartments();
+        updateDepartmentsList();
+        showNotification('Birim silindi', 'success');
+    }
                 // Modal işlemleri
     function openTaskModal() {
         document.getElementById('taskModal').style.display = 'block';
@@ -992,11 +983,6 @@
         document.getElementById('userForm').reset();
     }
 
-    // Yardımcı fonksiyonlar
-    function generateTaskId() {
-        return 'task_' + new Date().getTime() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-
     function updateDashboardCounts() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         const currentUserId = localStorage.getItem('currentUserId');
@@ -1013,44 +999,60 @@
             userTasks.filter(task => task.status === 'pending').length;
     }
 
-    function formatDateTime(dateString) {
-        const date = new Date(dateString);
-        return `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        })}`;
+    // Profil işlemleri
+    function loadProfileData() {
+        const currentUserId = localStorage.getItem('currentUserId');
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const user = users.find(u => u.username === currentUserId);
+
+        if (user) {
+            document.getElementById('profileFullName').value = user.fullName;
+            document.getElementById('profileEmail').value = user.email;
+        }
+
+        const profileImage = localStorage.getItem('profileImage');
+        if (profileImage) {
+            document.getElementById('profileImage').src = profileImage;
+        }
     }
 
-    function formatStatus(status) {
-        const statusMap = {
-            pending: 'Beklemede',
-            'in-progress': 'Devam Ediyor',
-            completed: 'Tamamlandı',
-            overdue: 'Gecikmiş'
-        };
-        return statusMap[status] || status;
-    }
-
-    function formatRoleName(role) {
-        const roles = {
-            super_admin: 'Süper Admin',
-            admin: 'Yönetici',
-            manager: 'Amir',
-            user: 'Personel'
-        };
-        return roles[role] || role;
-    }
-
-    function showNotification(message, type = 'success') {
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        document.body.appendChild(notification);
+    function updateProfile(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const currentUserId = localStorage.getItem('currentUserId');
+        const users = JSON.parse(localStorage.getItem('users')) || [];
         
-        setTimeout(() => {
-            notification.classList.add('fade-out');
-            setTimeout(() => notification.remove(), 500);
-        }, 3000);
+        const updatedUsers = users.map(user => {
+            if (user.username === currentUserId) {
+                return {
+                    ...user,
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    updatedAt: new Date().toISOString()
+                };
+            }
+            return user;
+        });
+
+        localStorage.setItem('users', JSON.stringify(updatedUsers));
+        localStorage.setItem('currentUserName', formData.get('fullName'));
+        
+        document.getElementById('currentUserName').textContent = formData.get('fullName');
+        document.querySelector('.user-profile span').textContent = formData.get('fullName');
+        
+        showNotification('Profil bilgileri güncellendi', 'success');
+    }
+
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+                localStorage.setItem('profileImage', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
     }
 
     // Otomatik görev kontrolü için zamanlayıcı
