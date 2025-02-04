@@ -1025,6 +1025,24 @@ body {
     background: #555;
 }
 
+/* Modal Scroll Özelleştirme */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 /* Print Medya Sorgusu */
 @media print {
     .sidebar,
@@ -1065,22 +1083,4 @@ body {
 
 .save-btn:hover {
     background: #0b5ed7;
-}
-
-/* Modal Scroll Özelleştirme */
-.modal-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 3px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: #555;
 }
