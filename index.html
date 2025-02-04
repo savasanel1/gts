@@ -8,105 +8,69 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Sidebar aynı kalıyor -->
+    <!-- Sidebar -->
     <div class="sidebar">
-        <!-- Sidebar içeriği aynı -->
-    </div>
-
-    <!-- Main Content aynı kalıyor -->
-    <div class="main-content">
-        <!-- Top Bar aynı kalıyor -->
-    </div>
-
-    <!-- Task Modal - Güncellenen Kısım -->
-    <div id="taskModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeTaskModal()">&times;</span>
-            <h2>Yeni Görev Ekle</h2>
-            <form id="taskForm" onsubmit="saveTask(event)">
-                <div class="form-group">
-                    <label>Görevin Adı</label>
-                    <input type="text" name="taskName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label>Görev Talimatnamesi</label>
-                    <textarea name="taskInstructions" rows="3" required></textarea>
-                </div>
-
-                <div class="datetime-group">
-                    <div class="form-group">
-                        <label>Başlangıç Tarihi</label>
-                        <input type="date" name="startDate" class="datetime-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Başlangıç Saati</label>
-                        <input type="time" name="startTime" class="datetime-input" required>
-                    </div>
-                </div>
-
-                <div class="datetime-group">
-                    <div class="form-group">
-                        <label>Bitiş Tarihi</label>
-                        <input type="date" name="endDate" class="datetime-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Bitiş Saati</label>
-                        <input type="time" name="endTime" class="datetime-input" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Görev Puanı</label>
-                    <input type="number" name="taskPoints" min="1" max="100" required>
-                    <small class="help-text">Gecikme durumunda puanın %80'i alınacaktır.</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Ünvan</label>
-                    <select name="title" id="titleSelect" required>
-                        <option value="">Seçiniz...</option>
-                    </select>
-                </div>
-
-                <div class="custom-field-section">
-                    <div class="custom-field-header">
-                        <h4>Yeni Ünvan Ekle</h4>
-                    </div>
-                    <div class="add-custom-field">
-                        <input type="text" id="newTitle" placeholder="Yeni ünvan adı">
-                        <button type="button" onclick="addNewTitle()">Ekle</button>
-                    </div>
-                    <div class="custom-field-list" id="titleList">
-                        <!-- Ünvanlar dinamik olarak buraya eklenecek -->
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Birim</label>
-                    <select name="department" id="departmentSelect" required>
-                        <option value="">Seçiniz...</option>
-                    </select>
-                </div>
-
-                <div class="custom-field-section">
-                    <div class="custom-field-header">
-                        <h4>Yeni Birim Ekle</h4>
-                    </div>
-                    <div class="add-custom-field">
-                        <input type="text" id="newDepartment" placeholder="Yeni birim adı">
-                        <button type="button" onclick="addNewDepartment()">Ekle</button>
-                    </div>
-                    <div class="custom-field-list" id="departmentList">
-                        <!-- Birimler dinamik olarak buraya eklenecek -->
-                    </div>
-                </div>
-
-                <button type="submit" class="save-btn">Görevi Kaydet</button>
-            </form>
+        <div class="logo">
+            <i class="fas fa-university" style="font-size: 30px;"></i>
+            <h2>AYBÜ Görev Takip</h2>
+        </div>
+        <div class="menu-items">
+            <a href="#" class="menu-item active" data-page="home">
+                <i class="fas fa-home"></i>
+                Ana Sayfa
+            </a>
+            <a href="#" class="menu-item" data-page="users">
+                <i class="fas fa-users-cog"></i>
+                Kullanıcı Yönetimi
+            </a>
+            <a href="#" class="menu-item" data-page="tasks">
+                <i class="fas fa-tasks"></i>
+                Görevlerim
+            </a>
+            <a href="#" class="menu-item" data-page="team">
+                <i class="fas fa-users"></i>
+                Ekibim
+            </a>
+            <a href="#" class="menu-item" data-page="reports">
+                <i class="fas fa-chart-bar"></i>
+                Raporlar
+            </a>
+            <a href="#" class="menu-item" data-page="settings">
+                <i class="fas fa-cog"></i>
+                Ayarlar
+            </a>
+        </div>
+        <div class="bottom-user">
+            <div class="name">Ahmet Yılmaz</div>
+            <div class="role">Yönetici</div>
         </div>
     </div>
-        <!-- User Modal -->
+        <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h2 id="pageTitle">Ana Sayfa</h2>
+            <div class="search-box">
+                <input type="text" placeholder="Ara...">
+            </div>
+            <div class="user-section">
+                <div class="notification">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <span>Ahmet Yılmaz</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+        <!-- Dynamic Content Area -->
+        <div id="contentArea">
+            <!-- Burası dinamik olarak değişecek -->
+        </div>
+    </div>
+
+    <!-- User Modal -->
     <div id="userModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeUserModal()">&times;</span>
@@ -149,7 +113,217 @@
         </div>
     </div>
 
-    <script>
+    <!-- Task Modal -->
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTaskModal()">&times;</span>
+            <h2>Yeni Görev Ekle</h2>
+            <form id="taskForm" onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label>Görevin Adı</label>
+                    <input type="text" name="taskName" required>
+                </div>
+                <div class="form-group">
+                    <label>Görev Talimatnamesi</label>
+                    <textarea name="taskInstructions" rows="3" required></textarea>
+                </div>
+                <div class="datetime-group">
+                    <div class="form-group">
+                        <label>Başlangıç Tarihi</label>
+                        <input type="date" name="startDate" class="datetime-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Başlangıç Saati</label>
+                        <input type="time" name="startTime" class="datetime-input" required>
+                    </div>
+                </div>
+                <div class="datetime-group">
+                    <div class="form-group">
+                        <label>Bitiş Tarihi</label>
+                        <input type="date" name="endDate" class="datetime-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bitiş Saati</label>
+                        <input type="time" name="endTime" class="datetime-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Görev Puanı</label>
+                    <input type="number" name="taskPoints" min="1" max="100" required>
+                    <small class="help-text">Gecikme durumunda puanın %80'i alınacaktır.</small>
+                </div>
+                <div class="form-group">
+                    <label>Ünvan</label>
+                    <select name="title" id="titleSelect" required>
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+                <div class="custom-field-section">
+                    <div class="custom-field-header">
+                        <h4>Yeni Ünvan Ekle</h4>
+                    </div>
+                    <div class="add-custom-field">
+                        <input type="text" id="newTitle" placeholder="Yeni ünvan adı">
+                        <button type="button" onclick="addNewTitle()">Ekle</button>
+                    </div>
+                    <div class="custom-field-list" id="titleList">
+                        <!-- Ünvanlar dinamik olarak buraya eklenecek -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Birim</label>
+                    <select name="department" id="departmentSelect" required>
+                        <option value="">Seçiniz...</option>
+                    </select>
+                </div>
+                <div class="custom-field-section">
+                    <div class="custom-field-header">
+                        <h4>Yeni Birim Ekle</h4>
+                    </div>
+                    <div class="add-custom-field">
+                        <input type="text" id="newDepartment" placeholder="Yeni birim adı">
+                        <button type="button" onclick="addNewDepartment()">Ekle</button>
+                    </div>
+                    <div class="custom-field-list" id="departmentList">
+                        <!-- Birimler dinamik olarak buraya eklenecek -->
+                    </div>
+                </div>
+                <button type="submit" class="save-btn">Görevi Kaydet</button>
+            </form>
+        </div>
+    </div>
+        <script>
+    // Sayfa içeriklerini tanımla
+    const pageContents = {
+        home: `
+            <div class="dashboard-content">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Aktif Görevler</h3>
+                            <p class="number">12</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Tamamlanan Görevler</h3>
+                            <p class="number">85</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Bekleyen Görevler</h3>
+                            <p class="number">7</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="card-info">
+                            <h3>Performans Puanı</h3>
+                            <p class="number">92</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="recent-tasks">
+                    <div class="section-header">
+                        <h2>Son Görevler</h2>
+                        <button class="new-task-btn" onclick="openTaskModal()">
+                            <i class="fas fa-plus"></i> Yeni Görev
+                        </button>
+                    </div>
+                    <div class="task-list" id="taskList">
+                        <!-- Görevler dinamik olarak buraya eklenecek -->
+                    </div>
+                </div>
+            </div>
+        `,
+        users: `
+            <div class="user-management-container">
+                <div class="user-actions">
+                    <button class="add-user-btn" onclick="openUserModal()">
+                        <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
+                    </button>
+                </div>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Kullanıcı Adı</th>
+                            <th>E-posta</th>
+                            <th>Rol</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
+                    </tbody>
+                </table>
+            </div>
+        `,
+        tasks: `
+            <div class="dashboard-content">
+                <div class="task-management">
+                    <div class="section-header">
+                        <h2>Görevlerim</h2>
+                        <button class="new-task-btn" onclick="openTaskModal()">
+                            <i class="fas fa-plus"></i> Yeni Görev
+                        </button>
+                    </div>
+                    <div class="task-list" id="assignedTaskList">
+                        <!-- Atanmış görevler dinamik olarak buraya eklenecek -->
+                    </div>
+                </div>
+            </div>
+        `,
+        settings: `
+            <div class="settings-container">
+                <div class="settings-grid">
+                    <div class="settings-card">
+                        <div class="settings-header">
+                            <h3><i class="fas fa-user"></i> Profil Bilgileri</h3>
+                        </div>
+                        <div class="settings-content">
+                            <form id="profileForm" onsubmit="updateProfile(event)">
+                                <div class="profile-image-section">
+                                    <div class="profile-image">
+                                        <img src="default-avatar.png" id="profileImage" alt="Profil Fotoğrafı">
+                                        <div class="image-upload">
+                                            <label for="imageInput">
+                                                <i class="fas fa-camera"></i>
+                                            </label>
+                                            <input type="file" id="imageInput" accept="image/*" onchange="previewImage(event)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ad Soyad</label>
+                                    <input type="text" name="fullName" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>E-posta</label>
+                                    <input type="email" name="email" required>
+                                </div>
+                                <button type="submit" class="save-btn">Değişiklikleri Kaydet</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    };
+
     // Ünvan ve Birim verilerini localStorage'da tutmak için
     let titles = JSON.parse(localStorage.getItem('titles')) || [
         'Profesör',
@@ -166,16 +340,17 @@
         'Eğitim Fakültesi',
         'İktisadi ve İdari Bilimler Fakültesi'
     ];
-
-    // Sayfa yüklendiğinde ünvan ve birimleri yükle
+                // Sayfa yüklendiğinde çalışacak fonksiyonlar
     document.addEventListener('DOMContentLoaded', function() {
         loadTitles();
         loadDepartments();
         updateTitlesList();
         updateDepartmentsList();
+        loadTasks();
+        updateUserTable();
     });
 
-    // Ünvan ekleme fonksiyonu
+    // Ünvan ve Birim yönetimi fonksiyonları
     function addNewTitle() {
         const newTitle = document.getElementById('newTitle').value.trim();
         if (newTitle && !titles.includes(newTitle)) {
@@ -190,7 +365,6 @@
         }
     }
 
-    // Birim ekleme fonksiyonu
     function addNewDepartment() {
         const newDepartment = document.getElementById('newDepartment').value.trim();
         if (newDepartment && !departments.includes(newDepartment)) {
@@ -205,50 +379,54 @@
         }
     }
 
-    // Ünvanları select'e yükleme
     function loadTitles() {
         const select = document.getElementById('titleSelect');
-        select.innerHTML = '<option value="">Seçiniz...</option>';
-        titles.forEach(title => {
-            select.innerHTML += `<option value="${title}">${title}</option>`;
-        });
+        if (select) {
+            select.innerHTML = '<option value="">Seçiniz...</option>';
+            titles.forEach(title => {
+                select.innerHTML += `<option value="${title}">${title}</option>`;
+            });
+        }
     }
 
-    // Birimleri select'e yükleme
     function loadDepartments() {
         const select = document.getElementById('departmentSelect');
-        select.innerHTML = '<option value="">Seçiniz...</option>';
-        departments.forEach(dept => {
-            select.innerHTML += `<option value="${dept}">${dept}</option>`;
-        });
+        if (select) {
+            select.innerHTML = '<option value="">Seçiniz...</option>';
+            departments.forEach(dept => {
+                select.innerHTML += `<option value="${dept}">${dept}</option>`;
+            });
+        }
     }
-            // Ünvanlar listesini güncelleme
+
     function updateTitlesList() {
         const titleList = document.getElementById('titleList');
-        titleList.innerHTML = titles.map(title => `
-            <div class="custom-field-item">
-                <span>${title}</span>
-                <button type="button" class="remove-field-btn" onclick="removeTitle('${title}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `).join('');
+        if (titleList) {
+            titleList.innerHTML = titles.map(title => `
+                <div class="custom-field-item">
+                    <span>${title}</span>
+                    <button type="button" class="remove-field-btn" onclick="removeTitle('${title}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
     }
 
-    // Birimler listesini güncelleme
     function updateDepartmentsList() {
         const departmentList = document.getElementById('departmentList');
-        departmentList.innerHTML = departments.map(dept => `
-            <div class="custom-field-item">
-                <span>${dept}</span>
-                <button type="button" class="remove-field-btn" onclick="removeDepartment('${dept}')">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-        `).join('');
+        if (departmentList) {
+            departmentList.innerHTML = departments.map(dept => `
+                <div class="custom-field-item">
+                    <span>${dept}</span>
+                    <button type="button" class="remove-field-btn" onclick="removeDepartment('${dept}')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
     }
 
-    // Ünvan silme
     function removeTitle(title) {
         titles = titles.filter(t => t !== title);
         localStorage.setItem('titles', JSON.stringify(titles));
@@ -257,7 +435,6 @@
         showNotification('Ünvan silindi', 'success');
     }
 
-    // Birim silme
     function removeDepartment(dept) {
         departments = departments.filter(d => d !== dept);
         localStorage.setItem('departments', JSON.stringify(departments));
@@ -266,7 +443,7 @@
         showNotification('Birim silindi', 'success');
     }
 
-    // Görev kaydetme fonksiyonu
+    // Görev yönetimi fonksiyonları
     function saveTask(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -307,56 +484,39 @@
         event.target.reset();
         showNotification('Görev başarıyla eklendi', 'success');
     }
-
-    // Görevleri yükleme fonksiyonu
+                // Görevleri yükleme ve görüntüleme fonksiyonları
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         const taskList = document.getElementById('taskList');
-        if (taskList) {
-            taskList.innerHTML = tasks.map(task => `
-                <div class="task-item">
-                    <div class="task-info">
-                        <h4>${task.taskName}</h4>
-                        <p>${task.taskInstructions}</p>
-                    </div>
-                    <div class="task-meta">
-                        <span class="deadline">Başlangıç: ${formatDateTime(task.startDateTime)}</span>
-                        <span class="deadline">Bitiş: ${formatDateTime(task.endDateTime)}</span>
-                        <span class="points">Puan: ${task.taskPoints}</span>
-                        <span class="department">${task.department}</span>
-                        <span class="title">${task.title}</span>
-                        <span class="status ${task.status}">${formatStatus(task.status)}</span>
-                    </div>
+        const assignedTaskList = document.getElementById('assignedTaskList');
+        
+        const taskHTML = tasks.map(task => `
+            <div class="task-item">
+                <div class="task-info">
+                    <h4>${task.taskName}</h4>
+                    <p>${task.taskInstructions}</p>
                 </div>
-            `).join('');
-        }
+                <div class="task-meta">
+                    <span class="deadline">Başlangıç: ${formatDateTime(task.startDateTime)}</span>
+                    <span class="deadline">Bitiş: ${formatDateTime(task.endDateTime)}</span>
+                    <span class="points">Puan: ${task.taskPoints}</span>
+                    <span class="department">${task.department}</span>
+                    <span class="title">${task.title}</span>
+                    <span class="status ${task.status}">${formatStatus(task.status)}</span>
+                </div>
+            </div>
+        `).join('');
+
+        if (taskList) taskList.innerHTML = taskHTML;
+        if (assignedTaskList) assignedTaskList.innerHTML = taskHTML;
     }
 
-    // Tarih formatlama fonksiyonu
-    function formatDateTime(dateString) {
-        const date = new Date(dateString);
-        return `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR', {
-            hour: '2-digit',
-            minute: '2-digit'
-        })}`;
-    }
-
-    // Durum formatlama fonksiyonu
-    function formatStatus(status) {
-        const statusMap = {
-            pending: 'Beklemede',
-            'in-progress': 'Devam Ediyor',
-            completed: 'Tamamlandı'
-        };
-        return statusMap[status] || status;
-    }
-            // Kullanıcı kaydetme fonksiyonu
+    // Kullanıcı yönetimi fonksiyonları
     function saveUser(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
         const users = JSON.parse(localStorage.getItem('users')) || [];
         
-        // Kullanıcı adının benzersiz olduğunu kontrol et
         if (users.some(user => user.username === formData.get('username'))) {
             showNotification('Bu kullanıcı adı zaten kullanılıyor', 'error');
             return;
@@ -366,7 +526,7 @@
             fullName: formData.get('fullName'),
             username: formData.get('username'),
             email: formData.get('email'),
-            password: formData.get('password'), // Gerçek uygulamada şifre hash'lenmeli
+            password: formData.get('password'),
             role: formData.get('role'),
             status: formData.get('status'),
             createdAt: new Date().toISOString()
@@ -381,7 +541,6 @@
         showNotification('Kullanıcı başarıyla eklendi', 'success');
     }
 
-    // Kullanıcı tablosunu güncelleme
     function updateUserTable() {
         const users = JSON.parse(localStorage.getItem('users')) || [];
         const tbody = document.getElementById('userTableBody');
@@ -406,57 +565,24 @@
         }
     }
 
-    // Kullanıcı düzenleme
-    function editUser(username) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === username);
-        if (user) {
-            // Modal'ı düzenleme modunda aç
-            openUserModal();
-            const form = document.getElementById('userForm');
-            form.fullName.value = user.fullName;
-            form.username.value = user.username;
-            form.email.value = user.email;
-            form.role.value = user.role;
-            form.status.value = user.status;
-            
-            // Form gönderimini düzenleme moduna ayarla
-            form.onsubmit = function(e) {
-                e.preventDefault();
-                const updatedUsers = users.map(u => {
-                    if (u.username === username) {
-                        return {
-                            ...u,
-                            fullName: form.fullName.value,
-                            email: form.email.value,
-                            role: form.role.value,
-                            status: form.status.value,
-                            updatedAt: new Date().toISOString()
-                        };
-                    }
-                    return u;
-                });
-                
-                localStorage.setItem('users', JSON.stringify(updatedUsers));
-                updateUserTable();
-                closeUserModal();
-                showNotification('Kullanıcı başarıyla güncellendi', 'success');
-            };
-        }
+    // Yardımcı fonksiyonlar
+    function formatDateTime(dateString) {
+        const date = new Date(dateString);
+        return `${date.toLocaleDateString('tr-TR')} ${date.toLocaleTimeString('tr-TR', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })}`;
     }
 
-    // Kullanıcı silme
-    function deleteUser(username) {
-        if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const updatedUsers = users.filter(u => u.username !== username);
-            localStorage.setItem('users', JSON.stringify(updatedUsers));
-            updateUserTable();
-            showNotification('Kullanıcı başarıyla silindi', 'success');
-        }
+    function formatStatus(status) {
+        const statusMap = {
+            pending: 'Beklemede',
+            'in-progress': 'Devam Ediyor',
+            completed: 'Tamamlandı'
+        };
+        return statusMap[status] || status;
     }
 
-    // Rol adını formatlama
     function formatRoleName(role) {
         const roles = {
             super_admin: 'Süper Admin',
@@ -467,7 +593,24 @@
         return roles[role] || role;
     }
 
-    // Bildirim gösterme
+    // Modal işlemleri
+    function openTaskModal() {
+        document.getElementById('taskModal').style.display = 'block';
+    }
+
+    function closeTaskModal() {
+        document.getElementById('taskModal').style.display = 'none';
+    }
+
+    function openUserModal() {
+        document.getElementById('userModal').style.display = 'block';
+    }
+
+    function closeUserModal() {
+        document.getElementById('userModal').style.display = 'none';
+    }
+
+    // Bildirim sistemi
     function showNotification(message, type = 'success') {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
@@ -482,25 +625,19 @@
 
     // Sayfa yükleme ve navigasyon
     document.addEventListener('DOMContentLoaded', function() {
-        // Menü işlemleri
         const menuItems = document.querySelectorAll('.menu-item');
         menuItems.forEach(item => {
             item.addEventListener('click', function(e) {
                 e.preventDefault();
-                
-                // Aktif menü öğesini güncelle
                 menuItems.forEach(i => i.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Sayfa başlığını güncelle
                 const pageTitle = this.textContent.trim();
                 document.getElementById('pageTitle').textContent = pageTitle;
                 
-                // Sayfa içeriğini güncelle
                 const page = this.getAttribute('data-page');
                 document.getElementById('contentArea').innerHTML = pageContents[page] || '';
                 
-                // Sayfa spesifik işlemleri
                 if (page === 'tasks') {
                     loadTasks();
                 } else if (page === 'users') {
