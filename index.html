@@ -287,33 +287,33 @@
                 </div>
             </div>
         `,
-       users: `
-    <div class="user-management-container">
-        <div class="user-actions">
-            <button class="add-user-btn" onclick="openUserModal()">
-                <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
-            </button>
-        </div>
-        <div class="users-table-container">
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>Ad Soyad</th>
-                        <th>Kullanıcı Adı</th>
-                        <th>E-posta</th>
-                        <th>Rol</th>
-                        <th>Puan</th>
-                        <th>Durum</th>
-                        <th>İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="userTableBody">
-                    <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-`,
+        users: `
+            <div class="user-management-container">
+                <div class="user-actions">
+                    <button class="add-user-btn" onclick="openUserModal()">
+                        <i class="fas fa-plus"></i> Yeni Kullanıcı Ekle
+                    </button>
+                </div>
+                <div class="users-table-container">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Ad Soyad</th>
+                                <th>Kullanıcı Adı</th>
+                                <th>E-posta</th>
+                                <th>Rol</th>
+                                <th>Puan</th>
+                                <th>Durum</th>
+                                <th>İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody">
+                            <!-- Kullanıcılar dinamik olarak buraya eklenecek -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `,
         tasks: `
             <div class="dashboard-content">
                 <div class="task-management">
@@ -560,33 +560,33 @@
         window.location.href = 'login.html';
     }
 
-   function handleRoleBasedAccess(role) {
-    const menuItems = document.querySelectorAll('.menu-item');
-    const currentUserRole = localStorage.getItem('currentUserRole');
-    
-    menuItems.forEach(item => {
-        const page = item.getAttribute('data-page');
+    function handleRoleBasedAccess(role) {
+        const menuItems = document.querySelectorAll('.menu-item');
+        const currentUserRole = localStorage.getItem('currentUserRole');
         
-        // Kullanıcı yönetimi sayfasını sadece süper admin ve admin görebilir
-        if (page === 'users') {
-            if (!['super_admin', 'admin'].includes(currentUserRole)) {
-                item.style.display = 'none';
-            } else {
-                item.style.display = 'flex';
+        menuItems.forEach(item => {
+            const page = item.getAttribute('data-page');
+            
+            // Kullanıcı yönetimi sayfasını sadece süper admin ve admin görebilir
+            if (page === 'users') {
+                if (!['super_admin', 'admin'].includes(currentUserRole)) {
+                    item.style.display = 'none';
+                } else {
+                    item.style.display = 'flex';
+                }
             }
-        }
-        
-        // Görev ekleme butonunu sadece amir ve üstü görebilir
-        if (page === 'tasks') {
-            const taskButtons = document.querySelectorAll('.new-task-btn');
-            if (!['super_admin', 'admin', 'manager'].includes(currentUserRole)) {
-                taskButtons.forEach(btn => btn.style.display = 'none');
-            } else {
-                taskButtons.forEach(btn => btn.style.display = 'flex');
+            
+            // Görev ekleme butonunu sadece amir ve üstü görebilir
+            if (page === 'tasks') {
+                const taskButtons = document.querySelectorAll('.new-task-btn');
+                if (!['super_admin', 'admin', 'manager'].includes(currentUserRole)) {
+                    taskButtons.forEach(btn => btn.style.display = 'none');
+                } else {
+                    taskButtons.forEach(btn => btn.style.display = 'flex');
+                }
             }
-        }
-    });
-}
+        });
+    }
                 // Görev yönetimi fonksiyonları
     function saveTask(event) {
         event.preventDefault();
@@ -1010,96 +1010,6 @@
         }, 3000);
     }
 
-    // Profil ve ayarlar fonksiyonları
-    function loadProfileData() {
-        const currentUserId = localStorage.getItem('currentUserId');
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === currentUserId);
-
-        if (user) {
-            document.getElementById('profileFullName').value = user.fullName;
-            document.getElementById('profileEmail').value = user.email;
-        }
-
-        // Profil resmini yükle
-        const profileImage = localStorage.getItem('profileImage');
-        if (profileImage) {
-            document.getElementById('profileImage').src = profileImage;
-        }
-    }
-
-    function updateProfile(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const currentUserId = localStorage.getItem('currentUserId');
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        
-        const updatedUsers = users.map(user => {
-            if (user.username === currentUserId) {
-                return {
-                    ...user,
-                    fullName: formData.get('fullName'),
-                    email: formData.get('email'),
-                    updatedAt: new Date().toISOString()
-                };
-            }
-            return user;
-        });
-
-        localStorage.setItem('users', JSON.stringify(updatedUsers));
-        localStorage.setItem('currentUserName', formData.get('fullName'));
-        
-        // Kullanıcı adını güncelle
-        document.getElementById('currentUserName').textContent = formData.get('fullName');
-        document.querySelector('.user-profile span').textContent = formData.get('fullName');
-        
-        showNotification('Profil bilgileri güncellendi', 'success');
-    }
-
-    function updatePassword(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const currentUserId = localStorage.getItem('currentUserId');
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const user = users.find(u => u.username === currentUserId);
-
-        if (formData.get('newPassword') !== formData.get('confirmPassword')) {
-            showNotification('Yeni şifreler eşleşmiyor', 'error');
-            return;
-        }
-
-        if (user && user.password === formData.get('currentPassword')) {
-            const updatedUsers = users.map(u => {
-                if (u.username === currentUserId) {
-                    return {
-                        ...u,
-                        password: formData.get('newPassword'),
-                        passwordUpdatedAt: new Date().toISOString()
-                    };
-                }
-                return u;
-            });
-
-            localStorage.setItem('users', JSON.stringify(updatedUsers));
-            event.target.reset();
-            showNotification('Şifre başarıyla güncellendi', 'success');
-        } else {
-            showNotification('Mevcut şifre hatalı', 'error');
-        }
-    }
-
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profileImage').src = e.target.result;
-                localStorage.setItem('profileImage', e.target.result);
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
     // Otomatik görev kontrolü için zamanlayıcı
     setInterval(() => {
         pointsSystem.checkTaskDeadlines();
@@ -1116,30 +1026,6 @@
         document.getElementById('currentUserRole').textContent = formatRoleName(currentUserRole);
         document.getElementById('headerUserName').textContent = currentUserName;
         
-        // Kullanıcı rolüne göre menü öğelerini göster/gizle
-    const currentUserRole = localStorage.getItem('currentUserRole');
-    handleRoleBasedAccess(currentUserRole);
-        // Menü işlemleri
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            menuItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-            
-            const pageTitle = this.textContent.trim();
-            document.getElementById('pageTitle').textContent = pageTitle;
-            
-            const page = this.getAttribute('data-page');
-            document.getElementById('contentArea').innerHTML = pageContents[page] || '';
-            
-            // Sayfa spesifik işlemleri
-            switch(page) {
-                case 'users':
-                    updateUserTable();
-                    loadUsers();
-                    break;
-                    
         // Rol bazlı erişim kontrolü
         handleRoleBasedAccess(currentUserRole);
 
