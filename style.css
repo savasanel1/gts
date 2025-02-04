@@ -245,19 +245,6 @@ body {
     color: #333;
 }
 
-/* Görev Filtreleme */
-.task-filters {
-    margin-bottom: 20px;
-}
-
-.task-filters select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    min-width: 200px;
-}
-
 /* Section Header */
 .section-header {
     display: flex;
@@ -286,6 +273,19 @@ body {
 
 .new-task-btn:hover {
     background: #0b5ed7;
+}
+
+/* Task Filters */
+.task-filters {
+    margin-bottom: 20px;
+}
+
+.task-filters select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 200px;
 }
 /* Görev Listesi */
 .task-list {
@@ -703,51 +703,6 @@ body {
 .remove-field-btn:hover {
     background: #bb2d3b;
 }
-
-/* Bildirim Sistemi */
-.notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 25px;
-    border-radius: 4px;
-    color: white;
-    z-index: 1100;
-    animation: slideIn 0.5s ease-in-out;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.notification.success {
-    background-color: #28a745;
-}
-
-.notification.error {
-    background-color: #dc3545;
-}
-
-.notification.fade-out {
-    animation: fadeOut 0.5s ease-in-out forwards;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
-}
 /* Ayarlar Sayfası */
 .settings-container {
     padding: 20px;
@@ -852,22 +807,49 @@ body {
     margin: 0;
 }
 
-/* Kaydet Butonları */
-.save-btn {
-    background: #0d6efd;
+/* Bildirim Sistemi */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 4px;
     color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 15px;
-    font-size: 14px;
-    transition: background-color 0.3s;
+    z-index: 1100;
+    animation: slideIn 0.5s ease-in-out;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.save-btn:hover {
-    background: #0b5ed7;
+.notification.success {
+    background-color: #28a745;
+}
+
+.notification.error {
+    background-color: #dc3545;
+}
+
+.notification.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
 }
 
 /* Puan Geçmişi */
@@ -919,7 +901,6 @@ body {
     color: #999;
     font-size: 12px;
 }
-
 /* Responsive Tasarım */
 @media (max-width: 1200px) {
     .dashboard-cards {
@@ -1066,4 +1047,40 @@ body {
     body {
         background: white;
     }
+}
+
+/* Kaydet Butonları */
+.save-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Modal Scroll Özelleştirme */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
