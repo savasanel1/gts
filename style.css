@@ -75,11 +75,44 @@ body {
 
 .bottom-user .name {
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
 .bottom-user .role {
     font-size: 0.9rem;
     opacity: 0.8;
+    margin-bottom: 10px;
+}
+
+.bottom-user .user-points {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.bottom-user .user-points i {
+    color: #ffd700;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 10px;
+    background: rgba(220, 53, 69, 0.8);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background: #dc3545;
 }
 /* Ana İçerik Alanı */
 .main-content {
@@ -142,6 +175,19 @@ body {
     cursor: pointer;
 }
 
+.user-points-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255, 215, 0, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.user-points-badge i {
+    color: #ffd700;
+}
+
 /* Dashboard Kartları */
 .dashboard-content {
     background: white;
@@ -199,16 +245,30 @@ body {
     color: #333;
 }
 
-/* Görev Listesi */
-.recent-tasks {
-    margin-top: 20px;
+/* Görev Filtreleme */
+.task-filters {
+    margin-bottom: 20px;
 }
 
+.task-filters select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+/* Section Header */
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+}
+
+.section-header h2 {
+    color: #333;
+    font-size: 1.5rem;
 }
 
 .new-task-btn {
@@ -227,7 +287,7 @@ body {
 .new-task-btn:hover {
     background: #0b5ed7;
 }
-/* Görev Listesi Devamı */
+/* Görev Listesi */
 .task-list {
     display: flex;
     flex-direction: column;
@@ -240,9 +300,10 @@ body {
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #eee;
 }
 
 .task-item:hover {
@@ -250,14 +311,20 @@ body {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
+.task-info {
+    flex: 1;
+}
+
 .task-info h4 {
     margin-bottom: 5px;
     color: #333;
+    font-size: 16px;
 }
 
 .task-info p {
     color: #666;
     font-size: 14px;
+    line-height: 1.4;
 }
 
 .task-meta {
@@ -265,17 +332,36 @@ body {
     flex-direction: column;
     align-items: flex-end;
     gap: 5px;
+    min-width: 200px;
+}
+
+.task-meta span {
+    font-size: 13px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: #f8f9fa;
 }
 
 .deadline {
-    font-size: 13px;
     color: #666;
 }
 
+.points {
+    color: #0d6efd;
+    font-weight: 500;
+}
+
+.penalty {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.department, .title {
+    background: #e9ecef;
+    color: #495057;
+}
+
 .status {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
     font-weight: 500;
 }
 
@@ -292,6 +378,33 @@ body {
 .status.completed {
     background: #d4edda;
     color: #155724;
+}
+
+.status.overdue {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.task-actions {
+    margin-top: 10px;
+}
+
+.complete-task-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.complete-task-btn:hover {
+    background: #218838;
 }
 
 /* Modal Stiller */
@@ -320,24 +433,6 @@ body {
     overflow-y: auto;
 }
 
-/* Modal scroll çubuğu stilleri */
-.modal-content::-webkit-scrollbar {
-    width: 8px;
-}
-
-.modal-content::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.modal-content::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.modal-content::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
 .close {
     position: absolute;
     right: 20px;
@@ -350,6 +445,12 @@ body {
 
 .close:hover {
     color: #333;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
 }
 
 .form-group {
@@ -386,7 +487,6 @@ body {
     min-height: 100px;
 }
 
-/* Datetime grupları için stil */
 .datetime-group {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -394,14 +494,127 @@ body {
     margin-bottom: 15px;
 }
 
-.datetime-input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
+.help-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    display: block;
 }
-/* Özel Alan (Ünvan ve Birim) Yönetimi Stilleri */
+/* Kullanıcı Yönetimi */
+.user-management-container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.user-actions {
+    margin-bottom: 20px;
+}
+
+.add-user-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.3s;
+}
+
+.add-user-btn:hover {
+    background: #0b5ed7;
+}
+
+.users-table-container {
+    overflow-x: auto;
+}
+
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.users-table th,
+.users-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.users-table th {
+    background: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.users-table tr:hover {
+    background: #f8f9fa;
+}
+
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.role-badge.role-super_admin {
+    background: #dc3545;
+    color: white;
+}
+
+.role-badge.role-admin {
+    background: #0d6efd;
+    color: white;
+}
+
+.role-badge.role-manager {
+    background: #198754;
+    color: white;
+}
+
+.role-badge.role-user {
+    background: #6c757d;
+    color: white;
+}
+
+.status-active {
+    color: #198754;
+}
+
+.status-inactive {
+    color: #dc3545;
+}
+
+.action-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-right: 5px;
+    transition: opacity 0.3s;
+}
+
+.action-btn:hover {
+    opacity: 0.8;
+}
+
+.edit-btn {
+    background: #ffc107;
+    color: #000;
+}
+
+.delete-btn {
+    background: #dc3545;
+    color: white;
+}
+
+/* Özel Alan (Ünvan ve Birim) Yönetimi */
 .custom-field-section {
     margin-top: 15px;
     padding: 15px;
@@ -448,11 +661,6 @@ body {
     margin-bottom: 0;
 }
 
-.custom-field-item span {
-    color: #333;
-    font-size: 14px;
-}
-
 .add-custom-field {
     display: flex;
     gap: 10px;
@@ -496,7 +704,7 @@ body {
     background: #bb2d3b;
 }
 
-/* Bildirim Stilleri */
+/* Bildirim Sistemi */
 .notification {
     position: fixed;
     top: 20px;
@@ -540,44 +748,178 @@ body {
         opacity: 0;
     }
 }
-
-/* Görev Düzenleme Stilleri */
-.task-item.editable {
-    cursor: pointer;
-    position: relative;
+/* Ayarlar Sayfası */
+.settings-container {
+    padding: 20px;
 }
 
-.task-item.editable:after {
-    content: '\f044';
-    font-family: 'Font Awesome 5 Free';
-    position: absolute;
-    right: 10px;
-    top: 10px;
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.settings-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.settings-header {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.settings-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+}
+
+.settings-header h3 i {
     color: #0d6efd;
-    opacity: 0;
-    transition: opacity 0.3s;
 }
 
-.task-item.editable:hover:after {
-    opacity: 1;
+.settings-content {
+    padding: 20px;
 }
 
-/* Yardımcı Sınıflar */
-.text-center {
+/* Profil Resmi ve Yükleme */
+.profile-image-section {
     text-align: center;
-}
-
-.mt-20 {
-    margin-top: 20px;
-}
-
-.mb-20 {
     margin-bottom: 20px;
 }
 
-.hidden {
+.profile-image {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.image-upload {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #0d6efd;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+}
+
+.image-upload:hover {
+    background: #0b5ed7;
+}
+
+.image-upload i {
+    color: white;
+    font-size: 14px;
+}
+
+.image-upload input {
     display: none;
 }
+
+/* Checkbox Stilleri */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+/* Kaydet Butonları */
+.save-btn {
+    background: #0d6efd;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 15px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.save-btn:hover {
+    background: #0b5ed7;
+}
+
+/* Puan Geçmişi */
+.points-history {
+    margin-top: 30px;
+}
+
+.points-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.points-history-item {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.points-history-item.award {
+    border-left: 4px solid #28a745;
+}
+
+.points-history-item.penalty {
+    border-left: 4px solid #dc3545;
+}
+
+.points-amount {
+    font-weight: bold;
+}
+
+.points-amount.positive {
+    color: #28a745;
+}
+
+.points-amount.negative {
+    color: #dc3545;
+}
+
+.points-reason {
+    color: #666;
+    font-size: 14px;
+}
+
+.points-date {
+    color: #999;
+    font-size: 12px;
+}
+
 /* Responsive Tasarım */
 @media (max-width: 1200px) {
     .dashboard-cards {
@@ -600,7 +942,6 @@ body {
     
     .task-item {
         flex-direction: column;
-        align-items: flex-start;
     }
     
     .task-meta {
@@ -614,6 +955,10 @@ body {
     }
     
     .datetime-group {
+        grid-template-columns: 1fr;
+    }
+    
+    .settings-grid {
         grid-template-columns: 1fr;
     }
 }
@@ -644,14 +989,6 @@ body {
         justify-content: space-between;
     }
     
-    .dashboard-cards {
-        gap: 15px;
-    }
-    
-    .card {
-        padding: 15px;
-    }
-    
     .modal-content {
         width: 100%;
         margin: 0;
@@ -670,6 +1007,23 @@ body {
     .add-custom-field button {
         width: 100%;
     }
+}
+
+/* Yardımcı Sınıflar */
+.text-center {
+    text-align: center;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.hidden {
+    display: none;
 }
 
 /* Scrollbar Özelleştirme */
