@@ -589,51 +589,52 @@
     }
                 // Görev yönetimi fonksiyonları
     function saveTask(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        const taskId = formData.get('taskId') || generateTaskId();
-        
-        const startDateTime = new Date(`${formData.get('startDate')}T${formData.get('startTime')}`);
-        const endDateTime = new Date(`${formData.get('endDate')}T${formData.get('endTime')}`);
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const taskId = formData.get('taskId') || generateTaskId();
+    
+    const startDateTime = new Date(formData.get('startDateTime'));
+    const endDateTime = new Date(formData.get('endDateTime'));
 
-        if (endDateTime <= startDateTime) {
-            showNotification('Bitiş tarihi başlangıç tarihinden sonra olmalıdır', 'error');
-            return;
-        }
-
-        const task = {
-            taskId: taskId,
-            taskName: formData.get('taskName'),
-            taskInstructions: formData.get('taskInstructions'),
-            startDateTime: startDateTime.toISOString(),
-            endDateTime: endDateTime.toISOString(),
-            taskPoints: Number(formData.get('taskPoints')),
-            penaltyPoints: Number(formData.get('taskPoints')) * 0.8,
-            assignedTo: formData.get('assignedTo'),
-            title: formData.get('title'),
-            department: formData.get('department'),
-            status: 'pending',
-            createdAt: new Date().toISOString(),
-            createdBy: localStorage.getItem('currentUserId'),
-            penaltyApplied: false
-        };
-
-        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        const taskIndex = tasks.findIndex(t => t.taskId === taskId);
-        
-        if (taskIndex === -1) {
-            tasks.push(task);
-        } else {
-            tasks[taskIndex] = {...tasks[taskIndex], ...task};
-        }
-        
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-        loadTasks();
-        updateDashboardCounts();
-        closeTaskModal();
-        event.target.reset();
-        showNotification(taskIndex === -1 ? 'Görev başarıyla eklendi' : 'Görev başarıyla güncellendi', 'success');
+    // Tarih kontrolünü güncelliyoruz - aynı gün seçimine izin veriyoruz
+    if (endDateTime < startDateTime) { // <= yerine < kullanıyoruz
+        showNotification('Bitiş tarihi başlangıç tarihinden önce olamaz', 'error');
+        return;
     }
+
+    const task = {
+        taskId: taskId,
+        taskName: formData.get('taskName'),
+        taskInstructions: formData.get('taskInstructions'),
+        startDateTime: startDateTime.toISOString(),
+        endDateTime: endDateTime.toISOString(),
+        taskPoints: Number(formData.get('taskPoints')),
+        penaltyPoints: Number(formData.get('taskPoints')) * 0.8,
+        assignedTo: formData.get('assignedTo'),
+        title: formData.get('title'),
+        department: formData.get('department'),
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        createdBy: localStorage.getItem('currentUserId'),
+        penaltyApplied: false
+    };
+
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskIndex = tasks.findIndex(t => t.taskId === taskId);
+    
+    if (taskIndex === -1) {
+        tasks.push(task);
+    } else {
+        tasks[taskIndex] = {...tasks[taskIndex], ...task};
+    }
+    
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    loadTasks();
+    updateDashboardCounts();
+    closeTaskModal();
+    event.target.reset();
+    showNotification(taskIndex === -1 ? 'Görev başarıyla eklendi' : 'Görev başarıyla güncellendi', 'success');
+}
 
     function loadTasks() {
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
